@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-// import db from '@/lib/supabase/db';
+import { Noto_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/next-theme-provider';
+import { cn } from '@/lib/utils';
+// import db from '@/lib/supabase/db';
+import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const font = Noto_Sans({
+	weight: ['300', '400', '500', '600', '700'],
+	subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
 	title: 'Create Next App',
@@ -14,7 +18,7 @@ export const metadata: Metadata = {
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<html lang='en'>
-			<body className={inter.className}>
+			<body className={cn('bg-background', font.className)}>
 				<ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
 					{children}
 				</ThemeProvider>
