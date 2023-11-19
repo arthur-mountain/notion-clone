@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-
 import * as z from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { FormSchema } from '@/lib/form-schema/login';
+import { actionLoginUser } from '@/lib/server-actions/auth-action/login';
 import {
 	Form,
 	FormControl,
@@ -20,8 +20,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Loader from '@/components/global/Loader';
-// import { Separator } from '@/components/ui/separator';
-import { actionLoginUser } from '@/lib/server-actions/auth-action/login';
 
 const LoginPage = () => {
 	const router = useRouter();
@@ -58,7 +56,7 @@ const LoginPage = () => {
 			>
 				<Link href='/' className='w-full flex justify-left items-center'>
 					<Image
-						src='/cypresslogo.svg'
+						src='/cypress-logo.svg'
 						alt='cypress Logo'
 						width={50}
 						height={50}

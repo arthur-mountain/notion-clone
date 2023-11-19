@@ -23,7 +23,7 @@ const Header = () => {
 		<header className='p-4 flex justify-center items-center'>
 			<Link href='/' className='w-full flex gap-2 justify-left items-center'>
 				<Image
-					src='/cypresslogo.svg'
+					src='/cypress-logo.svg'
 					alt='Cypress Logo'
 					width={25}
 					height={25}
