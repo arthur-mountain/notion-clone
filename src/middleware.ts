@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createSubabaseServerClient } from '@/lib/supabase/utils';
+import { createServerComponentClient } from '@/lib/supabase/utils';
 import { EMAIL_LINK_ERROR } from '@/constants/error';
 
 export const middleware = async (request: NextRequest) => {
@@ -9,7 +9,7 @@ export const middleware = async (request: NextRequest) => {
 		},
 	});
 
-	const supabase = await createSubabaseServerClient({
+	const supabase = await createServerComponentClient({
 		set(name, value, options) {
 			response = NextResponse.next({
 				request: { headers: request.headers },

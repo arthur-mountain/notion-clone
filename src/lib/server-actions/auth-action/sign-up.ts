@@ -1,6 +1,6 @@
 'use server';
 import { z } from 'zod';
-import { createSubabaseServerClient } from '../../supabase/utils';
+import { createServerComponentClient } from '../../supabase/utils';
 import { SignUpSchema } from '../../form-schema/sign-up';
 
 const actionSignUpSchema = SignUpSchema.omit({ confirmPassword: true });
@@ -8,7 +8,7 @@ export const actionSignUpUser = async ({
 	email,
 	password,
 }: z.infer<typeof actionSignUpSchema>) => {
-	const supabase = createSubabaseServerClient();
+	const supabase = createServerComponentClient();
 	const { data } = await supabase
 		.from('profiles')
 		.select('*')

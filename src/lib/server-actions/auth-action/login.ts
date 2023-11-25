@@ -1,13 +1,13 @@
 'use server';
 import { z } from 'zod';
-import { createSubabaseServerClient } from '../../supabase/utils';
+import { createServerComponentClient } from '../../supabase/utils';
 import { FormSchema } from '../../form-schema/login';
 
 export const actionLoginUser = async ({
 	email,
 	password,
 }: z.infer<typeof FormSchema>) => {
-	return await createSubabaseServerClient().auth.signInWithPassword({
+	return await createServerComponentClient().auth.signInWithPassword({
 		email,
 		password,
 	});

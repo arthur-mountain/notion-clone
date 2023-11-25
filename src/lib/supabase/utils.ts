@@ -5,7 +5,7 @@ import {
 	type CookieOptions,
 } from '@supabase/ssr';
 
-export const createSubabaseServerClient = (cookieMethods?: CookieMethods) => {
+export const createServerComponentClient = (cookieMethods?: CookieMethods) => {
 	const cookieStore = cookies();
 	return createServerClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL as string,
