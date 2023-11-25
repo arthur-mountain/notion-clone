@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/next-theme-provider';
 import { cn } from '@/lib/utils';
-// import db from '@/lib/supabase/db';
+import '@/lib/supabase/db';
 import './globals.css';
 
 const font = Noto_Sans({
