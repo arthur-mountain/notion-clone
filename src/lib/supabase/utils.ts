@@ -1,7 +1,11 @@
 import { cookies } from 'next/headers';
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import {
+	createServerClient,
+	type CookieMethods,
+	type CookieOptions,
+} from '@supabase/ssr';
 
-export const createSubabaseServerClient = () => {
+export const createSubabaseServerClient = (cookieMethods?: CookieMethods) => {
 	const cookieStore = cookies();
 	return createServerClient(
 		process.env.NEXT_PUBLIC_SUPABASE_URL as string,
@@ -11,9 +15,15 @@ export const createSubabaseServerClient = () => {
 				get: (name: string) => cookieStore.get(name)?.value,
 				set: (name: string, value: string, options: CookieOptions) => {
 					cookieStore.set({ name, value, ...options });
+					if (typeof cookieMethods?.set === 'function') {
+						cookieMethods.set(name, value, options);
+					}
 				},
 				remove: (name: string, options: CookieOptions) => {
 					cookieStore.set({ name, value: '', ...options });
+					if (typeof cookieMethods?.remove === 'function') {
+						cookieMethods.remove(name, options);
+					}
 				},
 			},
 		},
