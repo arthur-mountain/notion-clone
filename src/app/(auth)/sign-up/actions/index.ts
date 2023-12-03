@@ -1,13 +1,11 @@
 'use server';
-import { z } from 'zod';
-import { createServerComponentClient } from '@/lib/supabase/utils';
-import { SignUpSchema } from '../form-schema';
+import type { SignUpActionParamType } from '../form-schema';
+import { createServerComponentClient } from '@/lib/supabase/utils/server';
 
-const actionSignUpSchema = SignUpSchema.omit({ confirmPassword: true });
 export const actionSignUpUser = async ({
 	email,
 	password,
-}: z.infer<typeof actionSignUpSchema>) => {
+}: SignUpActionParamType) => {
 	const supabase = createServerComponentClient();
 	const { data } = await supabase
 		.from('profiles')

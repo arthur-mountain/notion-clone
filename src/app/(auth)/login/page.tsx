@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import * as z from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -17,24 +16,22 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Loader from '@/components/global/Loader';
-import { FormSchema } from './form-schema';
+import { formSchema, type FormSchemaType } from './form-schema';
 import { actionLoginUser } from './actions';
 
 const LoginPage = () => {
 	const router = useRouter();
 	const [submitError, setSubmitError] = useState('');
 
-	const form = useForm<z.infer<typeof FormSchema>>({
+	const form = useForm<FormSchemaType>({
 		mode: 'onChange',
-		resolver: zodResolver(FormSchema),
+		resolver: zodResolver(formSchema),
 		defaultValues: { email: '', password: '' },
 	});
 
 	const isLoading = form.formState.isSubmitting;
 
-	const onSubmit: SubmitHandler<z.infer<typeof FormSchema>> = async (
-		formData,
-	) => {
+	const onSubmit: SubmitHandler<FormSchemaType> = async (formData) => {
 		const { error } = await actionLoginUser(formData);
 		if (error) {
 			form.reset();

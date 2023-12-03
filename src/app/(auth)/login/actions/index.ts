@@ -1,12 +1,8 @@
 'use server';
-import { z } from 'zod';
-import { createServerComponentClient } from '@/lib/supabase/utils';
-import { FormSchema } from '../form-schema';
+import type { FormSchemaType } from '../form-schema';
+import { createServerComponentClient } from '@/lib/supabase/utils/server';
 
-export const actionLoginUser = async ({
-	email,
-	password,
-}: z.infer<typeof FormSchema>) => {
+export const actionLoginUser = async ({ email, password }: FormSchemaType) => {
 	return await createServerComponentClient().auth.signInWithPassword({
 		email,
 		password,

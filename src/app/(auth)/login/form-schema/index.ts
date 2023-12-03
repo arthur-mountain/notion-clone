@@ -1,6 +1,8 @@
 import { z } from 'zod';
 
-export const FormSchema = z.object({
+export const formSchema = z.object({
 	email: z.string().describe('Email').email({ message: 'Invalid Email' }),
 	password: z.string().describe('Password').min(1, 'Password is required'),
 });
+
+export type FormSchemaType = z.infer<typeof formSchema>;

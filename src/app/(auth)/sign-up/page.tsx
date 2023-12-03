@@ -3,7 +3,6 @@ import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@/lib/utils';
@@ -19,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Loader from '@/components/global/Loader';
-import { SignUpFormSchema } from './form-schema';
+import { signUpFormSchema, type SignUpFormSchemaType } from './form-schema';
 import { actionSignUpUser } from './actions';
 
 const SignUpPage = () => {
@@ -41,17 +40,14 @@ const SignUpPage = () => {
 		[codeExchangeError],
 	);
 
-	const form = useForm<z.infer<typeof SignUpFormSchema>>({
+	const form = useForm<SignUpFormSchemaType>({
 		mode: 'onChange',
-		resolver: zodResolver(SignUpFormSchema),
+		resolver: zodResolver(signUpFormSchema),
 		defaultValues: { email: '', password: '', confirmPassword: '' },
 	});
 	const isLoading = form.formState.isSubmitting;
 
-	const onSubmit = async ({
-		email,
-		password,
-	}: z.infer<typeof SignUpFormSchema>) => {
+	const onSubmit = async ({ email, password }: SignUpFormSchemaType) => {
 		const { error } = await actionSignUpUser({ email, password });
 		if (error) {
 			form.reset();
