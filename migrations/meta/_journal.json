@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1700385498664,
-      "tag": "0000_wonderful_sunset_bain",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1700385513977,
-      "tag": "0001_mixed_catseye",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1701600864411,
-      "tag": "0002_wide_lucky_pierre",
+      "when": 1701601022760,
+      "tag": "0000_loose_quasimodo",
       "breakpoints": true
     }
   ]
