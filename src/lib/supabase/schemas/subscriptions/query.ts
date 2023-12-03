@@ -2,7 +2,7 @@
 import type { SubscriptionType } from '../../types';
 import db from '../../db';
 
-export const getSubscriptionByUserId = async (userId: string) => {
+export const getFirstSubscriptionByUserId = async (userId: string) => {
 	try {
 		const subscription = (await db.query.subscriptions.findFirst({
 			where: (s, { eq }) => eq(s.userId, userId),

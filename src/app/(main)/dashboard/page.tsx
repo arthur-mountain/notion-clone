@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { createServerComponentClient } from '@/lib/supabase/utils/server';
-import { getSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
-import { getWorkspaceByUserId } from '@/lib/supabase/schemas/workspaces/query';
+import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
+import { getFirstWorkspaceByUserId } from '@/lib/supabase/schemas/workspaces/query';
 import DashboardSetup from '@/components/dashboard-setup';
 
 const DashboardPage = async () => {
@@ -13,11 +13,11 @@ const DashboardPage = async () => {
 	if (!user) return;
 
 	const { subscription, error: subscriptionError } =
-		await getSubscriptionByUserId(user.id);
+		await getFirstSubscriptionByUserId(user.id);
 
 	// if (subscriptionError) return;
 
-	const { workspace } = await getWorkspaceByUserId(user.id);
+	const { workspace } = await getFirstWorkspaceByUserId(user.id);
 	if (!workspace) {
 		return (
 			<div className='bg-background h-screen w-screen flex justify-center items-center'>

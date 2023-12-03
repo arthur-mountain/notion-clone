@@ -3,7 +3,7 @@ import type { WorkspaceType } from '../../types';
 import { workspaces } from '@/tables';
 import db from '../../db';
 
-export const getWorkspaceByUserId = async (userId: string) => {
+export const getFirstWorkspaceByUserId = async (userId: string) => {
 	try {
 		const workspace = await db.query.workspaces.findFirst({
 			where: (w, { eq }) => eq(w.workspaceOwner, userId),
