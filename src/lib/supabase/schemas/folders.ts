@@ -3,7 +3,7 @@ import { workspaces } from './workspaces';
 
 export const folders = pgTable('folders', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
-	createAt: timestamp('create_at', {
+	createdAt: timestamp('created_at', {
 		mode: 'string',
 		withTimezone: true,
 	}),

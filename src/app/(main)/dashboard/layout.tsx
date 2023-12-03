@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { type PropsWithChildren } from 'react';
 
-const DashboardLayout = () => {
-  return (
-    <div>DashboardLayout</div>
-  )
-}
+type Props = PropsWithChildren<{
+	params: any;
+}>;
 
-export default DashboardLayout
+const DashboardLayout = ({ children }: Props) => {
+	return <main>{children}</main>;
+};
+
+export default DashboardLayout;

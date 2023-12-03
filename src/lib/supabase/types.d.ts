@@ -18,7 +18,7 @@ export type Json =
 	| { [key: string]: Json | undefined }
 	| Json[];
 
-export type Database = {
+export type DatabaseType = {
 	public: {
 		Tables: {
 			collaborators: {
@@ -417,16 +417,18 @@ export type Database = {
 	};
 };
 
-export type workspace = InferSelectModel<typeof workspaces>;
-export type User = InferSelectModel<typeof users>;
-export type Folder = InferSelectModel<typeof folders>;
-export type File = InferSelectModel<typeof files>;
-export type Product = InferSelectModel<typeof products>;
-export type Price = InferSelectModel<typeof prices> & { products?: Product };
-export type Customer = InferSelectModel<typeof customers>;
-export type Subscription = InferSelectModel<typeof subscriptions> & {
+export type WorkspaceType = InferSelectModel<typeof workspaces>;
+export type UserType = InferSelectModel<typeof users>;
+export type FolderType = InferSelectModel<typeof folders>;
+export type FileType = InferSelectModel<typeof files>;
+export type ProductType = InferSelectModel<typeof products>;
+export type PriceType = InferSelectModel<typeof prices> & {
+	products?: Product;
+};
+export type CustomerType = InferSelectModel<typeof customers>;
+export type SubscriptionType = InferSelectModel<typeof subscriptions> & {
 	prices: Price;
 };
-export type ProductWirhPrice = Product & {
+export type ProductWithPriceType = Product & {
 	prices?: Price[];
 };

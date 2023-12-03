@@ -1,3 +1,5 @@
+'use server';
+import type { DatabaseType } from '../types';
 import { cookies } from 'next/headers';
 import {
 	createServerClient,
@@ -7,7 +9,7 @@ import {
 
 export const createServerComponentClient = (cookieMethods?: CookieMethods) => {
 	const cookieStore = cookies();
-	return createServerClient(
+	return createServerClient<DatabaseType>(
 		process.env.NEXT_PUBLIC_SUPABASE_URL as string,
 		process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
 		{

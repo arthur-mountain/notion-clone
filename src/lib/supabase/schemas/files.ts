@@ -4,7 +4,7 @@ import { workspaces } from './workspaces';
 
 export const files = pgTable('files', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
-	createAt: timestamp('create_at', {
+	createdAt: timestamp('created_at', {
 		mode: 'string',
 		withTimezone: true,
 	}),

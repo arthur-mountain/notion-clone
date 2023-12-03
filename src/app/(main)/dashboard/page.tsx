@@ -1,6 +1,8 @@
-import React from 'react';
-import db from '@/lib/supabase/db';
+import { redirect } from 'next/navigation';
 import { createServerComponentClient } from '@/lib/supabase/utils';
+import { getSubscriptionByUserId } from '@/lib/supabase/queries/subscriptions';
+import { getWorkspaceByUserId } from '@/lib/supabase/queries/workspaces';
+import DashboardSetup from '@/components/dashboard-setup';
 
 const DashboardPage = async () => {
 	const supabase = await createServerComponentClient();
@@ -10,11 +12,21 @@ const DashboardPage = async () => {
 
 	if (!user) return;
 
-	// const workspace = await db.query.workspaces.findFirst({
-	// 	where: (workspace, { eq }) => eq(workspace.workspaceOwner, user.id),
-	// }); // yt:2:31:48
+	const { subscription, error: subscriptionError } =
+		await getSubscriptionByUserId(user.id);
 
-	return <div>DashboardPage</div>;
+	// if (subscriptionError) return;
+
+	const { workspace } = await getWorkspaceByUserId(user.id);
+	if (!workspace) {
+		return (
+			<div className='bg-background h-screen w-screen flex justify-center items-center'>
+				<DashboardSetup user={user} subscription={subscription} />
+			</div>
+		);
+	}
+
+	redirect(`/dashboard/${workspace.id}`);
 };
 
 export default DashboardPage;
