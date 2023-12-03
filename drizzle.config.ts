@@ -7,7 +7,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default {
-	schema: './src/lib/supabase/schemas/*.ts',
+	schema: './src/lib/supabase/schemas/**/schema.ts',
 	out: './migrations',
 	driver: 'pg',
 	dbCredentials: {

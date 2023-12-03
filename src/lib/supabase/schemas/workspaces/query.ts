@@ -1,7 +1,7 @@
 'use server';
-import type { WorkspaceType } from '../types';
+import type { WorkspaceType } from '../../types';
 import { workspaces } from '@/tables';
-import db from '../db';
+import db from '../../db';
 
 export const getWorkspaceByUserId = async (userId: string) => {
 	try {

@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { workspaces } from './workspaces';
+import { workspaces } from '../workspaces/schema';
 
 export const folders = pgTable('folders', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),

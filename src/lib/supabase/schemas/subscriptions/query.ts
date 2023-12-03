@@ -1,6 +1,6 @@
 'use server';
-import type { SubscriptionType } from '../types';
-import db from '../db';
+import type { SubscriptionType } from '../../types';
+import db from '../../db';
 
 export const getSubscriptionByUserId = async (userId: string) => {
 	try {
