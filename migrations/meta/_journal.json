@@ -15,6 +15,13 @@
       "when": 1700385513977,
       "tag": "0001_mixed_catseye",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1701600864411,
+      "tag": "0002_wide_lucky_pierre",
+      "breakpoints": true
     }
   ]
 }
