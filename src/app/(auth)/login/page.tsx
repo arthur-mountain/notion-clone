@@ -6,9 +6,6 @@ import Image from 'next/image';
 import * as z from 'zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-import { FormSchema } from '@/lib/form-schema/login';
-import { actionLoginUser } from '@/lib/server-actions/auth-action/login';
 import {
 	Form,
 	FormControl,
@@ -20,6 +17,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Loader from '@/components/global/Loader';
+import { FormSchema } from './form-schema';
+import { actionLoginUser } from './actions';
 
 const LoginPage = () => {
 	const router = useRouter();

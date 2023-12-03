@@ -1,6 +1,6 @@
 import type { AuthUser } from '@supabase/supabase-js';
-import type { CreateWorkspaceFormType } from '@/lib/form-schema/workspace';
 import type { SubscriptionType } from '@/lib/supabase/types';
+import type { CreateWorkspaceFormType } from './form-schema';
 import { useForm } from 'react-hook-form';
 import { useMemo, useState } from 'react';
 import { upload } from '@/lib/supabase/utils';

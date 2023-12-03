@@ -1,7 +1,7 @@
 'use server';
 import { z } from 'zod';
-import { createServerComponentClient } from '../../supabase/utils';
-import { FormSchema } from '../../form-schema/login';
+import { createServerComponentClient } from '@/lib/supabase/utils';
+import { FormSchema } from '../form-schema';
 
 export const actionLoginUser = async ({
 	email,

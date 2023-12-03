@@ -6,10 +6,7 @@ import Image from 'next/image';
 import * as z from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import { cn } from '@/lib/utils';
-import { SignUpFormSchema } from '@/lib/form-schema/sign-up';
-import { actionSignUpUser } from '@/lib/server-actions/auth-action/sign-up';
 import {
 	Form,
 	FormControl,
@@ -22,6 +19,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import Loader from '@/components/global/Loader';
+import { SignUpFormSchema } from './form-schema';
+import { actionSignUpUser } from './actions';
 
 const SignUpPage = () => {
 	const searchParams = useSearchParams();

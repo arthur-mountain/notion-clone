@@ -1,7 +1,7 @@
 'use server';
 import { z } from 'zod';
-import { createServerComponentClient } from '../../supabase/utils';
-import { SignUpSchema } from '../../form-schema/sign-up';
+import { createServerComponentClient } from '@/lib/supabase/utils';
+import { SignUpSchema } from '../form-schema';
 
 const actionSignUpSchema = SignUpSchema.omit({ confirmPassword: true });
 export const actionSignUpUser = async ({
