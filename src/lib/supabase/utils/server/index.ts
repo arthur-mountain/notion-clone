@@ -1,5 +1,5 @@
 'use server';
-import type { DatabaseType } from '../types';
+import type { DatabaseType } from '../../types';
 import { cookies } from 'next/headers';
 import {
 	createServerClient,

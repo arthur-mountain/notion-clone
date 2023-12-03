@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { createServerComponentClient } from '@/lib/supabase/utils';
+import { createServerComponentClient } from '@/lib/supabase/utils/server';
 import { EMAIL_LINK_ERROR } from '@/constants/error';
 
 export const middleware = async (request: NextRequest) => {

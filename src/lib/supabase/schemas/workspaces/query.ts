@@ -18,7 +18,7 @@ export const getWorkspaceByUserId = async (userId: string) => {
 
 export const createWorkspace = async (workspace: WorkspaceType) => {
 	try {
-		const response = await db.insert(workspaces).values(workspace);
+		await db.insert(workspaces).values(workspace);
 		return { data: null, error: null };
 	} catch (error) {
 		return { data: null, error: `Create workspace error: ${error}` };

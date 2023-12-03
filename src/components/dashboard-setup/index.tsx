@@ -1,6 +1,8 @@
 'use client';
 import type { AuthUser } from '@supabase/supabase-js';
 import type { SubscriptionType } from '@/lib/supabase/types';
+import EmojiPicker from '../global/EmojiPicker';
+import Loader from '../global/Loader';
 import {
 	Card,
 	CardContent,
@@ -8,8 +10,6 @@ import {
 	CardHeader,
 	CardTitle,
 } from '../ui/card';
-import EmojiPicker from '../global/EmojiPicker';
-import Loader from '../global/Loader';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -28,7 +28,7 @@ const DashboardSetup = ({ user, subscription }: Props) => {
 			selectedEmoji,
 		},
 		action: { onSubmit, onEmojiChange },
-	} = useInit({ user, subscription });
+	} = useInit({ user });
 
 	return (
 		<Card className='w-[800px] h-screen sm:h-auto'>
@@ -76,7 +76,7 @@ const DashboardSetup = ({ user, subscription }: Props) => {
 								type='file'
 								accept='image/*'
 								placeholder='Workspace Name'
-								// disabled={isLoading || subscription?.status !== 'active'}
+								disabled={isLoading || subscription?.status !== 'active'}
 								{...FORM_REGISTER_ATTRIBUTES.logo}
 							/>
 							<small className='text-red-600'>

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { createServerComponentClient } from '@/lib/supabase/utils';
-import { getSubscriptionByUserId } from '@/lib/supabase/queries/subscriptions';
-import { getWorkspaceByUserId } from '@/lib/supabase/queries/workspaces';
+import { createServerComponentClient } from '@/lib/supabase/utils/server';
+import { getSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
+import { getWorkspaceByUserId } from '@/lib/supabase/schemas/workspaces/query';
 import DashboardSetup from '@/components/dashboard-setup';
 
 const DashboardPage = async () => {

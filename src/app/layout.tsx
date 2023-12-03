@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
 import { ThemeProvider } from '@/components/providers/next-theme-provider';
+import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '@/lib/supabase/db';
 import './globals.css';
@@ -21,6 +22,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 			<body className={cn('bg-background', font.className)}>
 				<ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
 					{children}
+					<Toaster />
 				</ThemeProvider>
 			</body>
 		</html>
