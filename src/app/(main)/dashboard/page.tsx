@@ -15,7 +15,7 @@ const DashboardPage = async () => {
 	const { subscription, error: subscriptionError } =
 		await getFirstSubscriptionByUserId(user.id);
 
-	// if (subscriptionError) return;
+	if (subscriptionError) return;
 
 	const { workspace } = await getFirstWorkspaceByUserId(user.id);
 	if (!workspace) {

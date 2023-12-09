@@ -76,7 +76,8 @@ const DashboardSetup = ({ user, subscription }: Props) => {
 								type='file'
 								accept='image/*'
 								placeholder='Workspace Name'
-								disabled={isLoading || subscription?.status !== 'active'}
+								className=' cursor-pointer'
+								disabled={isLoading /*|| subscription?.status !== 'active'*/}
 								{...FORM_REGISTER_ATTRIBUTES.logo}
 							/>
 							<small className='text-red-600'>
