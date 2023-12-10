@@ -9,6 +9,7 @@ import {
 	getSharedWorkspaces,
 } from '@/lib/supabase/schemas/workspaces/query';
 import { cn } from '@/lib/utils';
+import WorkspaceDropdown from './WorkspaceDropdown';
 
 type Props = { params: { workspaceId: string }; className?: string };
 
@@ -49,7 +50,18 @@ const Sidebar = async ({ params, className }: Props) => {
 				className,
 			)}
 		>
-			<div></div>
+			<div>
+				<WorkspaceDropdown
+					privateWorkspaces={privateWorkspaces}
+					sharedWorkspaces={sharedWorkspaces}
+					collaboratingWorkspaces={collaboratingWorkspaces}
+					defaultWorkspace={[
+						...privateWorkspaces,
+						...collaboratingWorkspaces,
+						...sharedWorkspaces,
+					].find((workspace) => workspace.id === params.workspaceId)}
+				/>
+			</div>
 		</aside>
 	);
 };
