@@ -3,7 +3,7 @@ import type { SubscriptionType } from '@/lib/supabase/types';
 import { useReducer, useCallback } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 import { createClientComponentClient } from '@/lib/supabase/utils/client';
-import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
+import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/queries';
 
 type Store = { user: AuthUser | null; subscription: SubscriptionType | null };
 type Action =

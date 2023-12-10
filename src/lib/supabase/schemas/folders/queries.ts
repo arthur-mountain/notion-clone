@@ -1,7 +1,7 @@
 'use server';
 import { eq } from 'drizzle-orm';
 import db from '../../db';
-import { folders as foldersSchema } from './schema';
+import { folders as foldersSchema } from '@/tables';
 
 export const getFolders = async (workspaceId: string) => {
 	try {

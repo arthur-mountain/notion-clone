@@ -25,16 +25,16 @@ import { useUser } from '../../providers/UserProvider';
 
 type Props = PropsWithChildren<{
 	existingCollaboratorIds: string[];
-	getCollaborator: (collaborator: UserType) => void;
+	addCollaborator: (collaborator: UserType) => void;
 }>;
 
 const CollaboratorSearch = ({
 	children,
 	existingCollaboratorIds,
-	getCollaborator,
+	addCollaborator,
 }: Props) => {
 	const {
-		store: { user },
+		store: { user: authUser },
 	} = useUser();
 	const [searchUsers, setSearchUsers] = useState<UserType[]>([]);
 	const [email, setEmail] = useState('');
@@ -42,10 +42,6 @@ const CollaboratorSearch = ({
 
 	const onChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setEmail(e.currentTarget.value);
-	};
-
-	const addCollaborator = (user: UserType) => {
-		getCollaborator(user);
 	};
 
 	useEffect(() => {
@@ -79,7 +75,7 @@ const CollaboratorSearch = ({
 				<ScrollArea className='mt-6 w-full rounded-md'>
 					{searchUsers
 						.filter((user) => !existingCollaboratorIds.includes(user.id))
-						.filter((user) => user.id !== user?.id)
+						.filter((user) => user.id !== authUser?.id)
 						.map((user) => (
 							<div
 								key={user.id}

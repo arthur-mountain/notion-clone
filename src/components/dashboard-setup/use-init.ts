@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { upload } from '@/lib/supabase/utils/client/upload';
-import { createWorkspace } from '@/lib/supabase/schemas/workspaces/query';
+import { createWorkspace } from '@/lib/supabase/schemas/workspaces/queries';
 import { useAppStore } from '../providers/AppProvider';
 import { useToast } from '../ui/use-toast';
 import {

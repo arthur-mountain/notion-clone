@@ -1,13 +1,13 @@
 import React from 'react';
 import { redirect } from 'next/navigation';
 import { createServerComponentClient } from '@/lib/supabase/utils/server';
-import { getFolders } from '@/lib/supabase/schemas/folders/query';
-import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
+import { getFolders } from '@/lib/supabase/schemas/folders/queries';
+import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/queries';
 import {
 	getPrivateWorkspaces,
 	getCollaboratingWorkspaces,
 	getSharedWorkspaces,
-} from '@/lib/supabase/schemas/workspaces/query';
+} from '@/lib/supabase/schemas/workspaces/queries';
 import { cn } from '@/lib/utils';
 import WorkspaceDropdown from './WorkspaceDropdown';
 

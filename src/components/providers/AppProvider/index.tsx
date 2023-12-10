@@ -7,7 +7,7 @@ import React, {
 	type PropsWithChildren,
 } from 'react';
 import { usePathname } from 'next/navigation';
-import { getFiles } from '@/lib/supabase/schemas/files/query';
+import { getFiles } from '@/lib/supabase/schemas/files/queries';
 import useInit, { type StoreType, type ActionType } from './use-init';
 
 const AppStoreContext = createContext<

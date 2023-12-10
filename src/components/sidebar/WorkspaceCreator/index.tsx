@@ -16,7 +16,7 @@ import {
 	SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
-import { createWorkspace } from '@/lib/supabase/schemas/workspaces/query';
+import { createWorkspace } from '@/lib/supabase/schemas/workspaces/queries';
 import { addCollaborators } from '@/lib/supabase/schemas/collaborators/queries';
 import { useUser } from '../../providers/UserProvider';
 import CollaboratorSearch from './CollaboratorSearch';
@@ -39,12 +39,12 @@ const WorkspaceCreator = () => {
 		[collaborators],
 	);
 
-	const addCollaborator = (user: UserType) => () => {
-		setCollaborators([...collaborators, user]);
+	const addCollaborator = (user: UserType) => {
+		setCollaborators((prev) => [...prev, user]);
 	};
 
 	const removeCollaborator = (user: UserType) => {
-		setCollaborators(collaborators.filter((c) => c.id !== user.id));
+		setCollaborators((prev) => prev.filter((c) => c.id !== user.id));
 	};
 
 	const createItem = async () => {
@@ -140,9 +140,7 @@ const WorkspaceCreator = () => {
 				<div>
 					<CollaboratorSearch
 						existingCollaboratorIds={existingCollaboratorIds}
-						getCollaborator={(user) => {
-							addCollaborator(user);
-						}}
+						addCollaborator={addCollaborator}
 					>
 						<span className='inline-flex items-center justify-center rounded-md font-medium transition-colors bg-primary text-primary-foreground shadow hover:bg-primary/90 h-9 px-4 py-2 text-sm mt-4'>
 							<Plus />
