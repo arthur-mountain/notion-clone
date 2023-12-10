@@ -7,6 +7,7 @@ import { useMemo, useState } from 'react';
 
 import { upload } from '@/lib/supabase/utils/client/upload';
 import { createWorkspace } from '@/lib/supabase/schemas/workspaces/query';
+import { useAppStore } from '../providers/AppProvider';
 import { useToast } from '../ui/use-toast';
 import {
 	createWorkspaceFormSchema,
@@ -18,6 +19,7 @@ type InitialParams = {
 };
 
 const useInit = ({ user }: InitialParams) => {
+	const { store, action } = useAppStore();
 	const router = useRouter();
 	const { toast } = useToast();
 	const [selectedEmoji, setSelectedEmoji] = useState('💼');
@@ -78,6 +80,8 @@ const useInit = ({ user }: InitialParams) => {
 			const { error } = await createWorkspace(newWorkspace);
 
 			if (error) throw new Error(error);
+
+			action.addWorkspaces({ workspaces: [{ ...newWorkspace, folders: [] }] });
 
 			toast({
 				title: 'Workspace Created',

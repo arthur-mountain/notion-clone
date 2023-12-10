@@ -1,8 +1,6 @@
 import React, { type PropsWithChildren } from 'react';
 
-type Props = PropsWithChildren<{
-	params: any;
-}>;
+type Props = PropsWithChildren<{ params: any }>;
 
 const DashboardLayout = ({ children }: Props) => {
 	return <main>{children}</main>;
