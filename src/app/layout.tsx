@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
-import { ThemeProvider } from '@/components/providers/NextThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
-import AppStoreProvider from '@/components/providers/AppProvider';
+import { ThemeProvider } from '@/components/providers/NextThemeProvider';
+import { UserProvider } from '@/components/providers/UserProvider';
+import { AppStoreProvider } from '@/components/providers/AppProvider';
 import { cn } from '@/lib/utils';
 import '@/lib/supabase/db';
 import './globals.css';
@@ -23,8 +24,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 			<body className={cn('bg-background', font.className)}>
 				<ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
 					<AppStoreProvider>
-						{children}
-						<Toaster />
+						<UserProvider>
+							{children}
+							<Toaster />
+						</UserProvider>
 					</AppStoreProvider>
 				</ThemeProvider>
 			</body>

@@ -22,7 +22,7 @@ const AppStoreContext = createContext<
 	| undefined
 >(undefined);
 
-const AppStoreProvider = ({ children }: PropsWithChildren) => {
+export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 	const { store, action } = useInit();
 	const pathname = usePathname();
 	const [_, workspaceId, folderId, fileId] = useMemo(
@@ -60,4 +60,3 @@ export const useAppStore = () => {
 	}
 	return context;
 };
-export default AppStoreProvider;
