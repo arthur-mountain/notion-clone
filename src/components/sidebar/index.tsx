@@ -3,6 +3,12 @@ import { redirect } from 'next/navigation';
 import { createServerComponentClient } from '@/lib/supabase/utils/server';
 import { getFolders } from '@/lib/supabase/schemas/folders/query';
 import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/query';
+import {
+	getPrivateWorkspaces,
+	getCollaboratingWorkspaces,
+	getSharedWorkspaces,
+} from '@/lib/supabase/schemas/workspaces/query';
+import { cn } from '@/lib/utils';
 
 type Props = { params: { workspaceId: string }; className?: string };
 
@@ -15,14 +21,37 @@ const Sidebar = async ({ params, className }: Props) => {
 	const [
 		{ subscription, error: subscriptionError },
 		{ folders, error: foldersError },
+		{ privateWorkspaces, error: privateWorkspacesError },
+		{ collaboratingWorkspaces, error: collaboratingWorkspacesError },
+		{ sharedWorkspaces, error: sharedWorkspacesError },
 	] = await Promise.all([
 		getFirstSubscriptionByUserId(user.id),
 		getFolders(params.workspaceId),
+		getPrivateWorkspaces(user.id),
+		getCollaboratingWorkspaces(user.id),
+		getSharedWorkspaces(user.id),
 	]);
 
-	// if (subscriptionError || foldersError) return redirect('/dashboard');
+	if (
+		subscriptionError ||
+		foldersError ||
+		privateWorkspacesError ||
+		collaboratingWorkspacesError ||
+		sharedWorkspacesError
+	) {
+		return redirect('/dashboard');
+	}
 
-	return <div>Sidebar</div>;
+	return (
+		<aside
+			className={cn(
+				'hidden sm:flex sm:flex-col w-[280px] shrink-0 p-4 md:gap-4 justify-between',
+				className,
+			)}
+		>
+			<div></div>
+		</aside>
+	);
 };
 
 export default Sidebar;

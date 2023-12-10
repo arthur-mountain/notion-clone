@@ -8,6 +8,13 @@
       "when": 1701601022760,
       "tag": "0000_loose_quasimodo",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1702189778194,
+      "tag": "0001_real_stardust",
+      "breakpoints": true
     }
   ]
 }

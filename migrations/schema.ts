@@ -1,6 +1,5 @@
 import {
 	pgTable,
-	foreignKey,
 	pgEnum,
 	uuid,
 	timestamp,
@@ -11,7 +10,6 @@ import {
 	jsonb,
 } from 'drizzle-orm/pg-core';
 
-import { sql } from 'drizzle-orm';
 export const keyStatus = pgEnum('key_status', [
 	'default',
 	'valid',
@@ -54,6 +52,19 @@ export const subscriptionStatus = pgEnum('subscription_status', [
 	'past_due',
 	'unpaid',
 ]);
+
+export const collaborators = pgTable('collaborators', {
+	id: uuid('id').defaultRandom().primaryKey().notNull(),
+	workspaceId: uuid('workspace_id')
+		.notNull()
+		.references(() => workspaces.id, { onDelete: 'cascade' }),
+	createdAt: timestamp('created_at', { withTimezone: true, mode: 'string' })
+		.defaultNow()
+		.notNull(),
+	userId: uuid('user_id')
+		.notNull()
+		.references(() => users.id, { onDelete: 'cascade' }),
+});
 
 export const files = pgTable('files', {
 	id: uuid('id').defaultRandom().primaryKey().notNull(),
@@ -104,40 +115,40 @@ export const subscriptions = pgTable('subscriptions', {
 	quantity: integer('quantity'),
 	cancelAtPeriodEnd: boolean('cancel_at_period_end'),
 	created: timestamp('created', { withTimezone: true, mode: 'string' })
-		.default(sql`now()`)
+		.defaultNow()
 		.notNull(),
 	currentPeriodStart: timestamp('current_period_start', {
 		withTimezone: true,
 		mode: 'string',
 	})
-		.default(sql`now()`)
+		.defaultNow()
 		.notNull(),
 	currentPeriodEnd: timestamp('current_period_end', {
 		withTimezone: true,
 		mode: 'string',
 	})
-		.default(sql`now()`)
+		.defaultNow()
 		.notNull(),
 	endedAt: timestamp('ended_at', {
 		withTimezone: true,
 		mode: 'string',
-	}).default(sql`now()`),
+	}).defaultNow(),
 	cancelAt: timestamp('cancel_at', {
 		withTimezone: true,
 		mode: 'string',
-	}).default(sql`now()`),
+	}).defaultNow(),
 	canceledAt: timestamp('canceled_at', {
 		withTimezone: true,
 		mode: 'string',
-	}).default(sql`now()`),
+	}).defaultNow(),
 	trialStart: timestamp('trial_start', {
 		withTimezone: true,
 		mode: 'string',
-	}).default(sql`now()`),
+	}).defaultNow(),
 	trialEnd: timestamp('trial_end', {
 		withTimezone: true,
 		mode: 'string',
-	}).default(sql`now()`),
+	}).defaultNow(),
 });
 
 export const users = pgTable('users', {
