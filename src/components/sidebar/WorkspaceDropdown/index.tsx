@@ -1,7 +1,9 @@
 'use client';
 import type { WorkspaceType } from '@/lib/supabase/types';
 import React, { useCallback, useEffect, useState } from 'react';
+import CustomDialog from '@/components/global/CustomDialog';
 import { useAppStore } from '../../providers/AppProvider';
+import WorkspaceCreator from '../WorkspaceCreator';
 import SelectedWorkspace from './SelectedWorkspace';
 
 type Props = {
@@ -97,7 +99,7 @@ const WorkspaceDropdown = ({
 								</>
 							)}
 						</div>
-						{/* <CustomDialogTrigger
+						<CustomDialog
 							header='Create A Workspace'
 							content={<WorkspaceCreator />}
 							description='Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too.'
@@ -108,7 +110,7 @@ const WorkspaceDropdown = ({
 								</article>
 								Create workspace
 							</div>
-						</CustomDialogTrigger> */}
+						</CustomDialog>
 					</div>
 				</div>
 			)}

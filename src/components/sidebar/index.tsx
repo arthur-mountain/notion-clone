@@ -20,8 +20,8 @@ const Sidebar = async ({ params, className }: Props) => {
 	if (!user) return;
 
 	const [
-		{ subscription, error: subscriptionError },
-		{ folders, error: foldersError },
+		{ error: subscriptionError },
+		{ error: foldersError },
 		{ privateWorkspaces, error: privateWorkspacesError },
 		{ collaboratingWorkspaces, error: collaboratingWorkspacesError },
 		{ sharedWorkspaces, error: sharedWorkspacesError },
