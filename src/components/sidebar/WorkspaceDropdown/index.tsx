@@ -1,7 +1,7 @@
 'use client';
 import type { WorkspaceType } from '@/lib/supabase/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppStore } from '../providers/AppProvider';
+import { useAppStore } from '../../providers/AppProvider';
 import SelectedWorkspace from './SelectedWorkspace';
 
 type Props = {
