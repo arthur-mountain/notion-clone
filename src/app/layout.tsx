@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
-import { ThemeProvider } from '@/components/providers/next-theme-provider';
+import { ThemeProvider } from '@/components/providers/NextThemeProvider';
 import { Toaster } from '@/components/ui/toaster';
 import { cn } from '@/lib/utils';
 import '@/lib/supabase/db';
