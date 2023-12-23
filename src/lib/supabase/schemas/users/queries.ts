@@ -7,8 +7,8 @@ export const getUsersByEmail = async (email: string) => {
 		const users = await db.query.users.findMany({
 			where: (u, { ilike }) => ilike(u.email, `${email}%`),
 		});
-		return { users, error: null };
+		return { data: users, error: null };
 	} catch (error) {
-		return { users: null, error: `Find users by email error: ${error}` };
+		return { data: null, error: `Find users by email error: ${error}` };
 	}
 };

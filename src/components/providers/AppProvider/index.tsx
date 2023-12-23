@@ -33,12 +33,12 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 	useEffect(() => {
 		if (!workspaceId || !folderId) return;
 		(async () => {
-			const { files, error: filesError } = await getFiles(folderId);
+			const { data: files, error: filesError } = await getFiles(folderId);
 			if (filesError) return;
-			action.addFiles({ workspaceId, folderId, files });
+			action.setFiles({ workspaceId, folderId, files });
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [action.addFiles, folderId, workspaceId]);
+	}, [action.setFiles, folderId, workspaceId]);
 
 	useEffect(() => {
 		console.log('App Store Changed', store);

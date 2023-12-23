@@ -8,9 +8,9 @@ export const getFirstSubscriptionByUserId = async (userId: string) => {
 			where: (s, { eq }) => eq(s.userId, userId),
 		})) as SubscriptionType;
 
-		if (subscription) return { subscription, error: null };
-		return { subscription: null, error: null };
+		if (subscription) return { data:subscription, error: null };
+		return { data: null, error: null };
 	} catch (error) {
-		return { subscription: null, error: `Error ${error}` };
+		return { data: null, error: `Error ${error}` };
 	}
 };

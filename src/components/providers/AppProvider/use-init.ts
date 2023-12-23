@@ -19,8 +19,12 @@ type Action =
 	  }
 	| { type: 'DELETE_WORKSPACE'; payload: { workspaceId: string } }
 	| {
-			type: 'ADD_FOLDERS';
+			type: 'SET_FOLDERS';
 			payload: { workspaceId: string; folders: FoldersType[] };
+	  }
+	| {
+			type: 'ADD_FOLDER';
+			payload: { workspaceId: string; folder: FoldersType };
 	  }
 	| {
 			type: 'UPDATE_FOLDER';
@@ -35,8 +39,12 @@ type Action =
 			payload: { workspaceId: string; folderId: string };
 	  }
 	| {
-			type: 'ADD_FILES';
+			type: 'SET_FILES';
 			payload: { workspaceId: string; folderId: string; files: FileType[] };
+	  }
+	| {
+			type: 'ADD_FILE';
+			payload: { workspaceId: string; folderId: string; file: FileType };
 	  }
 	| {
 			type: 'DELETE_FILE';
@@ -54,6 +62,8 @@ type Action =
 
 const initialStore: Store = { workspaces: [] };
 
+const sortByCreatedAt = (a: any, b: any) =>
+	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 const reducer = (store: Store = initialStore, action: Action): Store => {
 	switch (action.type) {
 		case 'ADD_WORKSPACES':
@@ -77,18 +87,30 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'ADD_FOLDERS':
+		case 'SET_FOLDERS':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return {
-						...workspace,
-						folders: [...workspace.folders, ...action.payload.folders].sort(
-							(a, b) =>
-								new Date(String(a.createdAt)).getTime() -
-								new Date(String(b.createdAt)).getTime(),
-						),
-					};
+					return workspace.id === action.payload.workspaceId
+						? {
+								...workspace,
+								folders: action.payload.folders.sort(sortByCreatedAt),
+						  }
+						: workspace;
+				}),
+			};
+		case 'ADD_FOLDER':
+			return {
+				...store,
+				workspaces: store.workspaces.map((workspace) => {
+					return workspace.id === action.payload.workspaceId
+						? {
+								...workspace,
+								folders: [...workspace.folders, action.payload.folder].sort(
+									sortByCreatedAt,
+								),
+						  }
+						: workspace;
 				}),
 			};
 		case 'DELETE_FOLDER':
@@ -121,7 +143,7 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'ADD_FILES':
+		case 'SET_FILES':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
@@ -132,10 +154,27 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 									return folder.id === action.payload.folderId
 										? {
 												...folder,
-												files: [...folder.files, ...action.payload.files].sort(
-													(a, b) =>
-														new Date(String(a.createdAt)).getTime() -
-														new Date(String(b.createdAt)).getTime(),
+												files: action.payload.files.sort(sortByCreatedAt),
+										  }
+										: folder;
+								}),
+						  }
+						: workspace;
+				}),
+			};
+		case 'ADD_FILE':
+			return {
+				...store,
+				workspaces: store.workspaces.map((workspace) => {
+					return workspace.id === action.payload.workspaceId
+						? {
+								...workspace,
+								folders: workspace.folders.map((folder) => {
+									return folder.id === action.payload.folderId
+										? {
+												...folder,
+												files: [...folder.files, action.payload.file].sort(
+													sortByCreatedAt,
 												),
 										  }
 										: folder;
@@ -198,10 +237,33 @@ const useInit = () => {
 
 	const action = useMemo(
 		() => ({
-			addFiles: (
-				payload: Extract<Action, { type: 'ADD_FILES' }>['payload'],
+			setFiles: (
+				payload: Extract<Action, { type: 'SET_FILES' }>['payload'],
 			) => {
-				dispatch({ type: 'ADD_FILES', payload });
+				dispatch({ type: 'SET_FILES', payload });
+			},
+			addFile: (payload: Extract<Action, { type: 'ADD_FILE' }>['payload']) => {
+				dispatch({ type: 'ADD_FILE', payload });
+			},
+			updateFile: (
+				payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
+			) => {
+				dispatch({ type: 'UPDATE_FILE', payload });
+			},
+			setFolders: (
+				payload: Extract<Action, { type: 'SET_FOLDERS' }>['payload'],
+			) => {
+				dispatch({ type: 'SET_FOLDERS', payload });
+			},
+			addFolder: (
+				payload: Extract<Action, { type: 'ADD_FOLDER' }>['payload'],
+			) => {
+				dispatch({ type: 'ADD_FOLDER', payload });
+			},
+			updateFolder: (
+				payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
+			) => {
+				dispatch({ type: 'UPDATE_FOLDER', payload });
 			},
 			addWorkspaces: (
 				payload: Extract<Action, { type: 'ADD_WORKSPACES' }>['payload'],

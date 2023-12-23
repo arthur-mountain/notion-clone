@@ -6,7 +6,9 @@ export const folders = pgTable('folders', {
 	createdAt: timestamp('created_at', {
 		mode: 'string',
 		withTimezone: true,
-	}),
+	})
+		.defaultNow()
+		.notNull(),
 	title: text('title').notNull(),
 	iconId: text('icon_id').notNull(),
 	data: text('data'),
