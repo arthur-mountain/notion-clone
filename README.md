@@ -1,3 +1,8 @@
+## Description
+Create a website similar to Notion, following the resources below, such as
+
+Youtube: https://www.youtube.com/results?search_query=notion+clone
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
