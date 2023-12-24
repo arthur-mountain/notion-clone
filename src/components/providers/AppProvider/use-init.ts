@@ -9,16 +9,29 @@ export type WorkspacesType = WorkspaceType & {
 
 type Store = {
 	workspaces: WorkspacesType[];
+	currentWorkspace?: WorkspaceType & { permission?: 'shared' | 'private' };
+	workspaceId?: string;
+	folderId?: string;
+	fileId?: string;
 };
 
 type Action =
+	| {
+			type: 'INIT';
+			payload: {
+				currentWorkspace?: WorkspaceType;
+				workspaceId?: string;
+				folderId?: string;
+				fileId?: string;
+			};
+	  }
 	| { type: 'SET_WORKSPACES'; payload: { workspaces: WorkspacesType[] } }
 	| { type: 'ADD_WORKSPACE'; payload: { workspace: WorkspacesType } }
 	| {
 			type: 'UPDATE_WORKSPACE';
-			payload: { workspace: Partial<WorkspacesType>; workspaceId: string };
+			payload: { workspace: Partial<WorkspacesType> };
 	  }
-	| { type: 'DELETE_WORKSPACE'; payload: { workspaceId: string } }
+	| { type: 'DELETE_WORKSPACE' }
 	| {
 			type: 'SET_FOLDERS';
 			payload: { workspaceId: string; folders: FoldersType[] };
@@ -59,6 +72,10 @@ type Action =
 				fileId: string;
 				file: Partial<FileType>;
 			};
+	  }
+	| {
+			type: 'UPDATE_PERMISSION';
+			payload: { permission: 'shared' | 'private' };
 	  };
 
 const initialStore: Store = { workspaces: [] };
@@ -67,6 +84,14 @@ const sortByCreatedAt = (a: any, b: any) =>
 	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 const reducer = (store: Store = initialStore, action: Action): Store => {
 	switch (action.type) {
+		case 'INIT':
+			return {
+				...store,
+				currentWorkspace: action.payload.currentWorkspace,
+				workspaceId: action.payload.workspaceId,
+				folderId: action.payload.folderId,
+				fileId: action.payload.fileId,
+			};
 		case 'SET_WORKSPACES':
 			return { ...store, workspaces: action.payload.workspaces };
 		case 'ADD_WORKSPACE':
@@ -78,14 +103,14 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.filter(
-					(workspace) => workspace.id !== action.payload.workspaceId,
+					(workspace) => workspace.id !== store.workspaceId,
 				),
 			};
 		case 'UPDATE_WORKSPACE':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? { ...workspace, ...action.payload.workspace }
 						: workspace;
 				}),
@@ -230,6 +255,16 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
+		case 'UPDATE_PERMISSION':
+			return {
+				...store,
+				currentWorkspace: store.currentWorkspace
+					? {
+							...store.currentWorkspace,
+							permission: action.payload.permission,
+					  }
+					: undefined,
+			};
 		default:
 			return initialStore;
 	}
@@ -240,6 +275,9 @@ const useInit = () => {
 
 	const action = useMemo(
 		() => ({
+			init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
+				dispatch({ type: 'INIT', payload });
+			},
 			setFiles: (
 				payload: Extract<Action, { type: 'SET_FILES' }>['payload'],
 			) => {
@@ -277,6 +315,19 @@ const useInit = () => {
 				payload: Extract<Action, { type: 'ADD_WORKSPACE' }>['payload'],
 			) => {
 				dispatch({ type: 'ADD_WORKSPACE', payload });
+			},
+			updateWorkspace: (
+				payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
+			) => {
+				dispatch({ type: 'UPDATE_WORKSPACE', payload });
+			},
+			deleteWorkspace: () => {
+				dispatch({ type: 'DELETE_WORKSPACE' });
+			},
+			updatePermission: (
+				payload: Extract<Action, { type: 'UPDATE_PERMISSION' }>['payload'],
+			) => {
+				dispatch({ type: 'UPDATE_PERMISSION', payload });
 			},
 		}),
 		[dispatch],

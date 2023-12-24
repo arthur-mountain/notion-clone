@@ -11,24 +11,26 @@ import { getFiles } from '@/lib/supabase/schemas/files/queries';
 import useInit, { type StoreType, type ActionType } from './use-init';
 
 const AppStoreContext = createContext<
-	| {
-			store: StoreType & {
-				workspaceId?: string;
-				folderId?: string;
-				fileId?: string;
-			};
-			action: ActionType;
-	  }
-	| undefined
+	{ store: StoreType; action: ActionType } | undefined
 >(undefined);
 
 export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 	const { store, action } = useInit();
 	const pathname = usePathname();
 	const [_, workspaceId, folderId, fileId] = useMemo(
-		() => pathname?.split('/').filter(Boolean),
+		() => pathname.split('/').filter(Boolean),
 		[pathname],
 	);
+
+	useEffect(() => {
+		action.init({
+			currentWorkspace: store.workspaces.find((w) => w.id === workspaceId),
+			workspaceId,
+			folderId,
+			fileId,
+		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [action.init, store.workspaces, workspaceId, folderId, fileId]);
 
 	useEffect(() => {
 		if (!workspaceId || !folderId) return;
@@ -38,16 +40,14 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 			action.setFiles({ workspaceId, folderId, files });
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [action.setFiles, folderId, workspaceId]);
+	}, [action.setFiles, workspaceId, folderId]);
 
 	useEffect(() => {
 		console.log('App Store Changed', store);
 	}, [store]);
 
 	return (
-		<AppStoreContext.Provider
-			value={{ store: { ...store, workspaceId, folderId, fileId }, action }}
-		>
+		<AppStoreContext.Provider value={{ store, action }}>
 			{children}
 		</AppStoreContext.Provider>
 	);
