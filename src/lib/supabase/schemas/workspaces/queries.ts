@@ -129,3 +129,33 @@ export const getSharedWorkspaces = async (userId: string) => {
 		};
 	}
 };
+
+export const updateWorkspace = async (
+	workspace: Partial<WorkspaceType>,
+	workspaceId: string,
+) => {
+	if (!workspaceId) return;
+
+	try {
+		await db
+			.update(workspacesSchema)
+			.set(workspace)
+			.where(eq(workspacesSchema.id, workspaceId));
+		return { data: null, error: null };
+	} catch (error) {
+		return { data: null, error: `Update workspace error: ${error}` };
+	}
+};
+
+export const deleteWorkspace = async (workspaceId: string) => {
+	if (!workspaceId) return;
+
+	try {
+		await db
+			.delete(workspacesSchema)
+			.where(eq(workspacesSchema.id, workspaceId));
+		return { data: null, error: null };
+	} catch (error) {
+		return { data: null, error: `Delete workspace error: ${error}` };
+	}
+};
