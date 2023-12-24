@@ -1,6 +1,6 @@
 'use client';
 import type { UserType } from '@/lib/supabase/types';
-import { Search } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import {
 	useEffect,
 	useState,
@@ -22,18 +22,20 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { getUsersByEmail } from '@/lib/supabase/schemas/users/queries';
 import { useUser } from '../../providers/UserProvider';
-import useCollaborators from './use-collaborators';
 
-type Props = PropsWithChildren;
+type Props = PropsWithChildren<{
+	existsCollaboratorIdsSet: Set<string>;
+	addCollaborator: (collaborator: UserType) => void;
+}>;
 
-const CollaboratorSearch = ({ children }: Props) => {
+const CollaboratorSearch = ({
+	existsCollaboratorIdsSet,
+	addCollaborator,
+	children,
+}: Props) => {
 	const {
 		store: { user: authUser },
 	} = useUser();
-	const {
-		store: { existsCollaboratorIdsSet },
-		action: { addCollaborator },
-	} = useCollaborators();
 	const [searchUsers, setSearchUsers] = useState<UserType[]>([]);
 	const [email, setEmail] = useState('');
 	const deferredEmail = useDeferredValue(email);
@@ -52,7 +54,10 @@ const CollaboratorSearch = ({ children }: Props) => {
 
 	return (
 		<Sheet>
-			<SheetTrigger className='mx-auto block'>{children}</SheetTrigger>
+			<SheetTrigger className='mx-auto text-sm mt-4 flex items-center justify-center  whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary-purple-500 text-white shadow-sm hover:bg-primary-purple-500/80 h-8 rounded-md px-3'>
+				<Plus />
+				Add Collaborators
+			</SheetTrigger>
 			<SheetContent className='w-[400px] sm:w-[540px]'>
 				<SheetHeader>
 					<SheetTitle>Search Collaborator</SheetTitle>

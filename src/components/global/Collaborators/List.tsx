@@ -1,16 +1,17 @@
+import type { UserType } from '@/lib/supabase/types';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import useCollaborators from './use-collaborators';
 
-const CollaboratorList = () => {
-	const {
-		store: { collaborators },
-		action: { deleteCollaborator },
-	} = useCollaborators();
-
+const CollaboratorList = ({
+	collaborators,
+	deleteCollaborator,
+}: {
+	collaborators: UserType[];
+	deleteCollaborator: (collaborator: UserType) => void;
+}) => {
 	return (
-		<>
+		<div className='mt-4'>
 			<span className='text-sm text-muted-foreground'>
 				Collaborators {collaborators.length || ''}
 			</span>
@@ -40,7 +41,7 @@ const CollaboratorList = () => {
 					</div>
 				)}
 			</ScrollArea>
-		</>
+		</div>
 	);
 };
 
