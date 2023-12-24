@@ -7,9 +7,9 @@ import WorkspaceCreator from '../WorkspaceCreator';
 import SelectedWorkspace from './SelectedWorkspace';
 
 type Props = {
-	privateWorkspaces: WorkspaceType[] | [];
-	sharedWorkspaces: WorkspaceType[] | [];
-	collaboratingWorkspaces: WorkspaceType[] | [];
+	privateWorkspaces: WorkspaceType[];
+	sharedWorkspaces: WorkspaceType[];
+	collaboratingWorkspaces: WorkspaceType[];
 	defaultWorkspace?: WorkspaceType;
 };
 
@@ -21,12 +21,10 @@ const WorkspaceDropdown = ({
 }: Props) => {
 	const { store, action } = useAppStore();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [activeWorkspace, setActiveWorkspace] =
-		useState<Props['defaultWorkspace']>(defaultWorkspace);
+	const activeWorkspace = store.currentWorkspace || defaultWorkspace;
 
-	const handleClick = useCallback((workspace: WorkspaceType) => {
+	const handleClick = useCallback(() => {
 		setIsModalOpen(false);
-		setActiveWorkspace(workspace);
 	}, []);
 
 	useEffect(() => {
@@ -40,12 +38,7 @@ const WorkspaceDropdown = ({
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [
-		privateWorkspaces,
-		sharedWorkspaces,
-		collaboratingWorkspaces,
-		action.setWorkspaces,
-	]);
+	}, [privateWorkspaces, sharedWorkspaces, collaboratingWorkspaces]);
 
 	return (
 		<div className='relative inline-block text-left'>

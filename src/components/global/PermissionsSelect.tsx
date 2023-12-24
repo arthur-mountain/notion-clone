@@ -11,18 +11,24 @@ import {
 } from '@/components/ui/select';
 import { useAppStore } from '../providers/AppProvider';
 
+type Props = {
+	initialValue?: 'private' | 'shared';
+	onChange?: (v: 'private' | 'shared') => void;
+};
 
-const PermissionsSelect = () => {
+const PermissionsSelect = ({ initialValue, onChange }: Props) => {
 	const {
 		store: { currentWorkspace },
-		action: { updatePermission },
+		action: { updateWorkspace },
 	} = useAppStore();
 
-	const onPermissionsChange = useCallback(
+	const onPermissionChange = useCallback(
 		(value: 'private' | 'shared') => {
-			updatePermission({ permission: value });
+			onChange
+				? onChange(value)
+				: updateWorkspace({ workspace: { permission: value } });
 		},
-		[updatePermission],
+		[onChange, updateWorkspace],
 	);
 
 	return (
@@ -31,8 +37,8 @@ const PermissionsSelect = () => {
 				Permission
 			</Label>
 			<Select
-				onValueChange={onPermissionsChange}
-				defaultValue={currentWorkspace?.permission}
+				onValueChange={onPermissionChange}
+				defaultValue={initialValue || currentWorkspace?.permission || 'private'}
 			>
 				<SelectTrigger className='w-full h-26 -mt-3'>
 					<SelectValue />

@@ -1,12 +1,11 @@
 'use client';
 import type { FolderType } from '@/lib/supabase/types';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { MAX_FOLDERS_FREE_PLAN } from '@/constants/common';
 import { createFolder } from '@/lib/supabase/schemas/folders/queries';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useUser } from '@/components/providers/UserProvider';
-// import { useSubscriptionModal } from '@/components/providers/SubscriptionModalProvider';
 import Tooltip from '@/components/global/Tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { Accordion } from '@/components/ui/accordion';
@@ -19,14 +18,14 @@ type Props = {
 
 const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 	const {
-		store: { user, subscription },
+		store: { user },
+		action: { checkIsSubscriptionValid },
 	} = useUser();
 	const {
 		store: { workspaces, folderId },
 		action,
 	} = useAppStore();
 	const { toast } = useToast();
-	// const { open, setOpen } = useSubscriptionModal();
 	const workspace = useMemo(
 		() => workspaces.find((workspace) => workspace.id === workspaceId),
 		[workspaces, workspaceId],
@@ -37,8 +36,10 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 	);
 
 	const addFolder = async () => {
-		if (folders.length >= MAX_FOLDERS_FREE_PLAN && !subscription) {
-			// setOpen(true);
+		if (
+			folders.length >= MAX_FOLDERS_FREE_PLAN &&
+			!checkIsSubscriptionValid()
+		) {
 			return;
 		}
 

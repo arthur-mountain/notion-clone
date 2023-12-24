@@ -6,16 +6,11 @@ import { createClientComponentClient } from '@/lib/supabase/utils/client';
 
 type Props = {
 	workspace: WorkspaceType;
-	onClick?: (workspace: WorkspaceType) => void;
+	onClick?: (e: MouseEvent<HTMLAnchorElement>) => void;
 };
 
 const SelectedWorkspace = ({ workspace, onClick }: Props) => {
 	const [workspaceLogo, setWorkspaceLogo] = useState('/cypress-logo.svg');
-
-	const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
-		e.stopPropagation();
-		if (onClick) onClick(workspace);
-	};
 
 	useEffect(() => {
 		if (workspace.logo) {
@@ -30,7 +25,7 @@ const SelectedWorkspace = ({ workspace, onClick }: Props) => {
 	return (
 		<Link
 			href={`/dashboard/${workspace.id}`}
-			onClick={handleClick}
+			onClick={onClick}
 			className='flex rounded-md hover:bg-muted transition-all flex-row p-2 gap-4 justify-center cursor-pointer items-center my-2'
 		>
 			<Image

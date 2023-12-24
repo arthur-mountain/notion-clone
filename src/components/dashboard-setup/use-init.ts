@@ -76,6 +76,7 @@ const useInit = ({ user }: InitialParams) => {
 				workspaceOwner: user.id,
 				logo: filePath,
 				bannerUrl: '',
+				permission: 'private',
 			};
 			const { error } = await createWorkspace(newWorkspace);
 
@@ -103,10 +104,7 @@ const useInit = ({ user }: InitialParams) => {
 
 	return {
 		FORM_REGISTER_ATTRIBUTES,
-		store: {
-			formState: { isLoading, errors },
-			selectedEmoji,
-		},
+		store: { formState: { isLoading, errors }, selectedEmoji },
 		action: { onSubmit, onEmojiChange },
 	};
 };

@@ -5,10 +5,9 @@ import { getFirstWorkspaceByUserId } from '@/lib/supabase/schemas/workspaces/que
 import DashboardSetup from '@/components/dashboard-setup';
 
 const DashboardPage = async () => {
-	const supabase = await createServerComponentClient();
 	const {
 		data: { user },
-	} = await supabase.auth.getUser();
+	} = await createServerComponentClient().auth.getUser();
 
 	if (!user) return;
 

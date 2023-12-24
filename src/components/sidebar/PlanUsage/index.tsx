@@ -14,20 +14,16 @@ type Props = {
 const getUsagePercentage = (num: number) => (num / MAX_FOLDERS_FREE_PLAN) * 100;
 const PlanUsage = ({ foldersLength, subscription }: Props) => {
 	const {
-		store: { workspaces, workspaceId },
+		store: { currentWorkspace },
 	} = useAppStore();
 	const [usagePercentage, setUsagePercentage] = useState(
 		getUsagePercentage(foldersLength),
 	);
 
 	useEffect(() => {
-		const stateFoldersLength = workspaces.find(
-			(workspace) => workspace.id === workspaceId,
-		)?.folders?.length;
-		if (!stateFoldersLength) return;
-
-		setUsagePercentage(getUsagePercentage(stateFoldersLength));
-	}, [workspaces, workspaceId]);
+		if (!currentWorkspace) return;
+		setUsagePercentage(getUsagePercentage(currentWorkspace?.folders?.length));
+	}, [currentWorkspace]);
 
 	return (
 		<article className='mb-4'>

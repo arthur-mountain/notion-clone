@@ -9,7 +9,6 @@ export type WorkspacesType = WorkspaceType & {
 
 type Store = {
 	workspaces: WorkspacesType[];
-	currentWorkspace?: WorkspaceType & { permission?: 'shared' | 'private' };
 	workspaceId?: string;
 	folderId?: string;
 	fileId?: string;
@@ -18,12 +17,7 @@ type Store = {
 type Action =
 	| {
 			type: 'INIT';
-			payload: {
-				currentWorkspace?: WorkspaceType;
-				workspaceId?: string;
-				folderId?: string;
-				fileId?: string;
-			};
+			payload: { workspaceId?: string; folderId?: string; fileId?: string };
 	  }
 	| { type: 'SET_WORKSPACES'; payload: { workspaces: WorkspacesType[] } }
 	| { type: 'ADD_WORKSPACE'; payload: { workspace: WorkspacesType } }
@@ -87,7 +81,6 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 		case 'INIT':
 			return {
 				...store,
-				currentWorkspace: action.payload.currentWorkspace,
 				workspaceId: action.payload.workspaceId,
 				folderId: action.payload.folderId,
 				fileId: action.payload.fileId,
@@ -255,16 +248,6 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'UPDATE_PERMISSION':
-			return {
-				...store,
-				currentWorkspace: store.currentWorkspace
-					? {
-							...store.currentWorkspace,
-							permission: action.payload.permission,
-					  }
-					: undefined,
-			};
 		default:
 			return initialStore;
 	}
@@ -272,6 +255,10 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 
 const useInit = () => {
 	const [store, dispatch] = useReducer(reducer, initialStore);
+	const currentWorkspace = useMemo(
+		() => store.workspaces.find((w) => w.id === store.workspaceId),
+		[store.workspaces, store.workspaceId],
+	);
 
 	const action = useMemo(
 		() => ({
@@ -333,7 +320,7 @@ const useInit = () => {
 		[dispatch],
 	);
 
-	return { store, action };
+	return { store: { ...store, currentWorkspace }, action };
 };
 
 export type StoreType = ReturnType<typeof useInit>['store'];

@@ -8,45 +8,46 @@ import {
 } from '@/lib/supabase/schemas/collaborators/queries';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useUser } from '@/components/providers/UserProvider';
-import { useSubscriptionModal } from '@/components/providers/SubscriptionModalProvider';
 
-const useCollaborators = () => {
+const useCollaborators = ({
+	type = 'update',
+}: {
+	type?: 'create' | 'update';
+}) => {
 	const router = useRouter();
-	const { setIsOpen } = useSubscriptionModal();
 	const {
-		store: { subscription },
+		action: { checkIsSubscriptionValid },
 	} = useUser();
 	const {
 		store: { workspaceId },
-		action: { updatePermission },
+		action: { updateWorkspace },
 	} = useAppStore();
 	const [collaborators, setCollaborators] = useState<UserType[]>([]);
 	const existsCollaboratorIdsSet = useMemo(
 		() => new Set(collaborators.map(({ id }) => id)),
 		[collaborators],
 	);
-
-	const changePermissions = (value: 'shared' | 'private') => {
-		updatePermission({ permission: value });
-	};
+	const hasExistedWorkspace = type === 'update';
 
 	const addCollaborator = async (user: UserType) => {
 		if (!workspaceId) return;
-		if (subscription?.status !== 'active' && collaborators.length >= 2) {
-			setIsOpen(true);
-			return;
-		}
-		await addCollaborators([user], workspaceId);
+		if (collaborators.length >= 2 && !checkIsSubscriptionValid()) return;
+
+		if (hasExistedWorkspace) await addCollaborators([user], workspaceId);
 		setCollaborators((prev) => [...prev, user]);
 	};
 
 	const deleteCollaborator = async (user: UserType) => {
 		if (!workspaceId) return;
-		if (collaborators.length === 1) changePermissions('private');
+		if (hasExistedWorkspace && collaborators.length === 1) {
+			updateWorkspace({ workspace: { permission: 'private' } });
+		}
 
-		await removeCollaborators([user], workspaceId);
 		setCollaborators((prev) => prev.filter(({ id }) => id !== user.id));
-		router.refresh();
+		if (hasExistedWorkspace) {
+			await removeCollaborators([user], workspaceId);
+			router.refresh();
+		}
 	};
 
 	useEffect(() => {
@@ -54,11 +55,14 @@ const useCollaborators = () => {
 		(async () => {
 			const { data: collaborators } = await getCollaborators(workspaceId);
 			if (collaborators.length) {
-				updatePermission({ permission: 'shared' });
+				if (hasExistedWorkspace) {
+					updateWorkspace({ workspace: { permission: 'shared' } });
+				}
+
 				setCollaborators(collaborators);
 			}
 		})();
-	}, [workspaceId, updatePermission]);
+	}, [workspaceId, hasExistedWorkspace, updateWorkspace]);
 
 	return {
 		store: { collaborators, existsCollaboratorIdsSet },

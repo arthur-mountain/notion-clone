@@ -9,11 +9,11 @@ import {
 	getSharedWorkspaces,
 } from '@/lib/supabase/schemas/workspaces/queries';
 import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import WorkspaceDropdown from './WorkspaceDropdown';
 import PlanUsage from './PlanUsage';
 import Navigation from './Navigation';
 import FoldersDropdownList from './FolderDropdown';
-import { ScrollArea } from '../ui/scroll-area';
 
 type Props = { params: { workspaceId: string }; className?: string };
 
@@ -69,9 +69,8 @@ const Sidebar = async ({ params, className }: Props) => {
 					foldersLength={folders?.length || 0}
 					subscription={subscription}
 				/>
-				<Navigation myWorkspaceId={params.workspaceId} />
+				<Navigation workspaceId={params.workspaceId} />
 				<ScrollArea className='h-[450px]'>
-					{/*overflow-scroll  */}
 					<div className='pointer-events-none w-full absolute bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-40' />
 					<FoldersDropdownList
 						workspaceId={params.workspaceId}

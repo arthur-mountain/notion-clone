@@ -1,23 +1,19 @@
-import { cn } from '@/lib/utils';
+import { HomeIcon, SettingsIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
+import { cn } from '@/lib/utils';
 import CustomDialog from '@/components/global/CustomDialog';
-import { HomeIcon, SettingsIcon, TrashIcon } from 'lucide-react';
 import SettingsForm from './SettingsForm';
 import TrashRestore from './TrashRestore';
 
-type Props = {
-	myWorkspaceId: string;
-	className?: string;
-};
-
-const Navigation = ({ myWorkspaceId, className }: Props) => {
+type Props = { workspaceId: string; className?: string };
+const Navigation = ({ workspaceId, className }: Props) => {
 	return (
 		<nav className={cn('my-2', className)}>
 			<ul className='flex flex-col gap-2'>
 				<li className='group/native text-Neutrals/neutrals-7'>
 					<Link
-						href={`/dashboard/${myWorkspaceId}`}
+						href={`/dashboard/${workspaceId}`}
 						className='group/native flex items-center text-Neutrals/neutrals-7 transition-all gap-2'
 					>
 						<HomeIcon size={20} />

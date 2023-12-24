@@ -15,4 +15,5 @@ export const workspaces = pgTable('workspaces', {
 	inTrash: text('in_trash'),
 	logo: text('logo'),
 	bannerUrl: text('banner_url'),
+	permission: text('permission').default('private').notNull(),
 });
