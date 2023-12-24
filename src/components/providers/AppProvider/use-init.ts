@@ -12,7 +12,8 @@ type Store = {
 };
 
 type Action =
-	| { type: 'ADD_WORKSPACES'; payload: { workspaces: WorkspacesType[] } }
+	| { type: 'SET_WORKSPACES'; payload: { workspaces: WorkspacesType[] } }
+	| { type: 'ADD_WORKSPACE'; payload: { workspace: WorkspacesType } }
 	| {
 			type: 'UPDATE_WORKSPACE';
 			payload: { workspace: Partial<WorkspacesType>; workspaceId: string };
@@ -66,10 +67,12 @@ const sortByCreatedAt = (a: any, b: any) =>
 	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 const reducer = (store: Store = initialStore, action: Action): Store => {
 	switch (action.type) {
-		case 'ADD_WORKSPACES':
+		case 'SET_WORKSPACES':
+			return { ...store, workspaces: action.payload.workspaces };
+		case 'ADD_WORKSPACE':
 			return {
 				...store,
-				workspaces: [...store.workspaces, ...action.payload.workspaces],
+				workspaces: [...store.workspaces, action.payload.workspace],
 			};
 		case 'DELETE_WORKSPACE':
 			return {
@@ -265,10 +268,15 @@ const useInit = () => {
 			) => {
 				dispatch({ type: 'UPDATE_FOLDER', payload });
 			},
-			addWorkspaces: (
-				payload: Extract<Action, { type: 'ADD_WORKSPACES' }>['payload'],
+			setWorkspaces: (
+				payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
 			) => {
-				dispatch({ type: 'ADD_WORKSPACES', payload });
+				dispatch({ type: 'SET_WORKSPACES', payload });
+			},
+			addWorkspace: (
+				payload: Extract<Action, { type: 'ADD_WORKSPACE' }>['payload'],
+			) => {
+				dispatch({ type: 'ADD_WORKSPACE', payload });
 			},
 		}),
 		[dispatch],

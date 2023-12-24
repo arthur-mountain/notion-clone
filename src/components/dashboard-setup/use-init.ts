@@ -81,7 +81,7 @@ const useInit = ({ user }: InitialParams) => {
 
 			if (error) throw new Error(error);
 
-			action.addWorkspaces({ workspaces: [{ ...newWorkspace, folders: [] }] });
+			action.addWorkspace({ workspace: { ...newWorkspace, folders: [] } });
 
 			toast({
 				title: 'Workspace Created',

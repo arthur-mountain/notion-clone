@@ -31,7 +31,7 @@ const WorkspaceDropdown = ({
 
 	useEffect(() => {
 		if (!store.workspaces.length) {
-			action.addWorkspaces({
+			action.setWorkspaces({
 				workspaces: [
 					...privateWorkspaces,
 					...sharedWorkspaces,
@@ -44,7 +44,7 @@ const WorkspaceDropdown = ({
 		privateWorkspaces,
 		sharedWorkspaces,
 		collaboratingWorkspaces,
-		action.addWorkspaces,
+		action.setWorkspaces,
 	]);
 
 	return (
