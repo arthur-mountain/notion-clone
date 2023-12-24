@@ -10,6 +10,10 @@ import {
 } from '@/lib/supabase/schemas/workspaces/queries';
 import { cn } from '@/lib/utils';
 import WorkspaceDropdown from './WorkspaceDropdown';
+import PlanUsage from './PlanUsage';
+import Navigation from './Navigation';
+import FoldersDropdownList from './FolderDropdown';
+import { ScrollArea } from '../ui/scroll-area';
 
 type Props = { params: { workspaceId: string }; className?: string };
 
@@ -20,11 +24,11 @@ const Sidebar = async ({ params, className }: Props) => {
 	if (!user) return;
 
 	const [
-		{ error: subscriptionError },
-		{ error: foldersError },
-		{ privateWorkspaces, error: privateWorkspacesError },
-		{ collaboratingWorkspaces, error: collaboratingWorkspacesError },
-		{ sharedWorkspaces, error: sharedWorkspacesError },
+		{ data: subscription, error: subscriptionError },
+		{ data: folders, error: foldersError },
+		{ data: privateWorkspaces, error: privateWorkspacesError },
+		{ data: collaboratingWorkspaces, error: collaboratingWorkspacesError },
+		{ data: sharedWorkspaces, error: sharedWorkspacesError },
 	] = await Promise.all([
 		getFirstSubscriptionByUserId(user.id),
 		getFolders(params.workspaceId),
@@ -61,7 +65,21 @@ const Sidebar = async ({ params, className }: Props) => {
 						...sharedWorkspaces,
 					].find((workspace) => workspace.id === params.workspaceId)}
 				/>
+				<PlanUsage
+					foldersLength={folders?.length || 0}
+					subscription={subscription}
+				/>
+				<Navigation myWorkspaceId={params.workspaceId} />
+				<ScrollArea className='h-[450px]'>
+					{/*overflow-scroll  */}
+					<div className='pointer-events-none w-full absolute bottom-0 h-20 bg-gradient-to-t from-background to-transparent z-40' />
+					<FoldersDropdownList
+						workspaceId={params.workspaceId}
+						workspaceFolders={folders || []}
+					/>
+				</ScrollArea>
 			</div>
+			{/* <UserCard subscription={subscription} /> */}
 		</aside>
 	);
 };

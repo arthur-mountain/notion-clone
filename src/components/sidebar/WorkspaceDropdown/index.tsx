@@ -20,10 +20,12 @@ const WorkspaceDropdown = ({
 	defaultWorkspace,
 }: Props) => {
 	const { store, action } = useAppStore();
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [activeWorkspace, setActiveWorkspace] =
 		useState<Props['defaultWorkspace']>(defaultWorkspace);
 
 	const handleClick = useCallback((workspace: WorkspaceType) => {
+		setIsModalOpen(false);
 		setActiveWorkspace(workspace);
 	}, []);
 
@@ -44,19 +46,18 @@ const WorkspaceDropdown = ({
 		collaboratingWorkspaces,
 		action.addWorkspaces,
 	]);
+
 	return (
-		<div className=' relative inline-block text-left'>
-			<div>
-				<span onClick={() => setActiveWorkspace(undefined)}>
-					{activeWorkspace ? (
-						<SelectedWorkspace workspace={activeWorkspace} />
-					) : (
-						'Select a workspace'
-					)}
-				</span>
+		<div className='relative inline-block text-left'>
+			<div onClickCapture={() => setIsModalOpen(!isModalOpen)}>
+				{activeWorkspace ? (
+					<SelectedWorkspace workspace={activeWorkspace} />
+				) : (
+					'Select a workspace'
+				)}
 			</div>
-			{!!activeWorkspace && (
-				<div className='origin-top-right absolute w-full rounded-md shadow-md z-50 h-[190px] bg-black/10 backdrop-blur-lg group overflow-scroll border-[1px] border-muted '>
+			{isModalOpen && (
+				<div className='origin-top-right absolute w-full rounded-md shadow-md z-50 h-[190px] bg-black/10 backdrop-blur-lg group overflow-scroll border-[1px] border-muted'>
 					<div className='rounded-md flex flex-col'>
 						<div className='p-2'>
 							{privateWorkspaces.length > 0 && (

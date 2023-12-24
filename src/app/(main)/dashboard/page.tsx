@@ -12,12 +12,12 @@ const DashboardPage = async () => {
 
 	if (!user) return;
 
-	const { subscription, error: subscriptionError } =
+	const { data: subscription, error: subscriptionError } =
 		await getFirstSubscriptionByUserId(user.id);
 
 	if (subscriptionError) return;
 
-	const { workspace } = await getFirstWorkspaceByUserId(user.id);
+	const { data: workspace } = await getFirstWorkspaceByUserId(user.id);
 	if (!workspace) {
 		return (
 			<div className='bg-background h-screen w-screen flex justify-center items-center'>

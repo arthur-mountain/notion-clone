@@ -21,7 +21,7 @@ export const getFiles = async (folderId: string) => {
 			.from(filesSchema)
 			.orderBy(filesSchema.createdAt)
 			.where(eq(filesSchema.folderId, folderId));
-		return { data:files, error: null };
+		return { data: files, error: null };
 	} catch (error) {
 		return { data: [], error: `Get fils error is: ${error}` };
 	}
