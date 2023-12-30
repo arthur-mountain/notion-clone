@@ -1,7 +1,5 @@
 import type { AuthUser } from '@supabase/supabase-js';
 import type { FileType } from '@/lib/supabase/types';
-import { createFile, updateFile } from '@/lib/supabase/schemas/files/queries';
-import { updateFolder } from '@/lib/supabase/schemas/folders/queries';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -16,12 +14,12 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 		switch (type) {
 			case 'folder':
 				error = folderId
-					? (await updateFolder({ title }, folderId)).error
+					? (await action.updateFolder({ folder: { title } })).error
 					: 'FolderId not founded';
 				break;
 			case 'file':
 				error = fileId
-					? (await updateFile({ title }, fileId)).error
+					? (await action.updateFile({ file: { title } })).error
 					: 'FileId not founded';
 				break;
 			default:
@@ -49,8 +47,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'folder': {
 				funcOrError = folderId
 					? () => {
-							action.updateFolder({ folder: data });
-							return updateFolder(data, folderId);
+							return action.updateFolder({ folder: data });
 					  }
 					: 'FolderId not founded';
 				break;
@@ -59,8 +56,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 				funcOrError =
 					folderId && fileId
 						? () => {
-								action.updateFile({ file: data });
-								return updateFile(data, fileId);
+								return action.updateFile({ file: data });
 						  }
 						: 'One of folderId and fileId not founded';
 				break;
@@ -88,8 +84,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'folder': {
 				funcOrError = folderId
 					? () => {
-							action.updateFolder({ folder: data });
-							return updateFolder(data, folderId);
+							return action.updateFolder({ folder: data });
 					  }
 					: 'FolderId not founded';
 				break;
@@ -97,8 +92,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'file': {
 				funcOrError = folderId
 					? () => {
-							action.updateFile({ file: data });
-							return updateFile(data, fileId);
+							return action.updateFile({ file: data });
 					  }
 					: 'One of folderId and fileId not founded';
 				break;
@@ -134,8 +128,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			bannerUrl: '',
 		};
 
-		action.addFile({ file: newFile });
-		if ((await createFile(newFile)).error) {
+		if ((await action.addFile({ file: newFile })).error) {
 			toast({
 				title: 'Error',
 				variant: 'destructive',

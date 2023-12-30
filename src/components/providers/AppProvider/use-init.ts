@@ -1,7 +1,14 @@
 'use client';
 import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
-import { deleteFile } from '@/lib/supabase/schemas/files/queries';
-import { deleteFolder } from '@/lib/supabase/schemas/folders/queries';
+import {
+	updateFile,
+	deleteFile,
+	createFile,
+} from '@/lib/supabase/schemas/files/queries';
+import {
+	updateFolder,
+	deleteFolder,
+} from '@/lib/supabase/schemas/folders/queries';
 import { useReducer } from 'react';
 
 export type AppStoreFolderType = FolderType & { files: FileType[] };
@@ -235,16 +242,18 @@ const useInit = () => {
 		},
 		addFile: (payload: Extract<Action, { type: 'ADD_FILE' }>['payload']) => {
 			dispatch({ type: 'ADD_FILE', payload });
+			return createFile(payload.file);
 		},
 		updateFile: (
 			payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
 		) => {
 			dispatch({ type: 'UPDATE_FILE', payload });
+			return updateFile(payload.file, store.fileId);
 		},
-		deleteFile: async () => {
+		deleteFile: () => {
 			if (!store.fileId) return;
 			dispatch({ type: 'DELETE_FILE' });
-			await deleteFile(store.fileId);
+			return deleteFile(store.fileId);
 		},
 		setFolders: (
 			payload: Extract<Action, { type: 'SET_FOLDERS' }>['payload'],
@@ -260,11 +269,12 @@ const useInit = () => {
 			payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
 		) => {
 			dispatch({ type: 'UPDATE_FOLDER', payload });
+			return updateFolder(payload.folder, store.folderId);
 		},
-		deleteFolder: async () => {
+		deleteFolder: () => {
 			if (!store.folderId) return;
 			dispatch({ type: 'DELETE_FOLDER' });
-			await deleteFolder(store.folderId);
+			return deleteFolder(store.folderId);
 		},
 		setWorkspaces: (
 			payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
