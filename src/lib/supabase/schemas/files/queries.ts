@@ -4,6 +4,17 @@ import { eq } from 'drizzle-orm';
 import { files as filesSchema } from '@/tables';
 import db from '../../db';
 
+export const getFileById = async (fileId: string) => {
+	try {
+		const file = await db.query.files.findFirst({
+			where: (w, { eq }) => eq(w.id, fileId),
+		});
+		return { data: file, error: null };
+	} catch (error) {
+		return { data: null, error: `Get file error: ${error}` };
+	}
+};
+
 export const createFile = async (file: FileType) => {
 	try {
 		const results = await db.insert(filesSchema).values(file);

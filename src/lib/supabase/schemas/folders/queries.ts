@@ -4,6 +4,17 @@ import { eq } from 'drizzle-orm';
 import db from '../../db';
 import { folders as foldersSchema } from '@/tables';
 
+export const getFolderById = async (folderId: string) => {
+	try {
+		const folder = await db.query.folders.findFirst({
+			where: (w, { eq }) => eq(w.id, folderId),
+		});
+		return { data: folder, error: null };
+	} catch (error) {
+		return { data: null, error: `Get folder error: ${error}` };
+	}
+};
+
 export const createFolder = async (folder: FolderType) => {
 	try {
 		const results = await db.insert(foldersSchema).values(folder);

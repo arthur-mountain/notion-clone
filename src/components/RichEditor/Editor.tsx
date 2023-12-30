@@ -1,5 +1,6 @@
 import type { Quill } from 'quill';
 import { useCallback } from 'react';
+import 'quill/dist/quill.snow.css';
 
 const TOOLBAR_OPTIONS = [
 	['bold', 'italic', 'underline', 'strike'], // toggled buttons

@@ -8,6 +8,17 @@ import {
 } from '@/tables';
 import db from '../../db';
 
+export const getWorkspaceById = async (workspaceId: string) => {
+	try {
+		const workspace = await db.query.workspaces.findFirst({
+			where: (w, { eq }) => eq(w.id, workspaceId),
+		});
+		return { data: workspace, error: null };
+	} catch (error) {
+		return { data: null, error: `Get workspace error: ${error}` };
+	}
+};
+
 export const createWorkspace = async (workspace: WorkspaceType) => {
 	try {
 		await db.insert(workspacesSchema).values(workspace);
