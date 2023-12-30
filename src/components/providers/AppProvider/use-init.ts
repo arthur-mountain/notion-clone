@@ -1,16 +1,16 @@
 'use client';
+import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
 import { deleteFile } from '@/lib/supabase/schemas/files/queries';
 import { deleteFolder } from '@/lib/supabase/schemas/folders/queries';
-import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
-import { useReducer, useMemo } from 'react';
+import { useReducer } from 'react';
 
-export type FoldersType = FolderType & { files: FileType[] };
-export type WorkspacesType = WorkspaceType & {
-	folders: FoldersType[];
+export type AppStoreFolderType = FolderType & { files: FileType[] };
+export type AppStoreWorkspaceType = WorkspaceType & {
+	folders: AppStoreFolderType[];
 };
 
 type Store = {
-	workspaces: WorkspacesType[];
+	workspaces: AppStoreWorkspaceType[];
 	workspaceId: string;
 	folderId: string;
 	fileId: string;
@@ -21,16 +21,16 @@ type Action =
 			type: 'INIT';
 			payload: { workspaceId?: string; folderId?: string; fileId?: string };
 	  }
-	| { type: 'SET_WORKSPACES'; payload: { workspaces: WorkspacesType[] } }
-	| { type: 'ADD_WORKSPACE'; payload: { workspace: WorkspacesType } }
+	| { type: 'SET_WORKSPACES'; payload: { workspaces: AppStoreWorkspaceType[] } }
+	| { type: 'ADD_WORKSPACE'; payload: { workspace: AppStoreWorkspaceType } }
 	| {
 			type: 'UPDATE_WORKSPACE';
-			payload: { workspace: Partial<WorkspacesType> };
+			payload: { workspace: Partial<AppStoreWorkspaceType> };
 	  }
 	| { type: 'DELETE_WORKSPACE' }
-	| { type: 'SET_FOLDERS'; payload: { folders: FoldersType[] } }
-	| { type: 'ADD_FOLDER'; payload: { folder: FoldersType } }
-	| { type: 'UPDATE_FOLDER'; payload: { folder: Partial<FoldersType> } }
+	| { type: 'SET_FOLDERS'; payload: { folders: AppStoreFolderType[] } }
+	| { type: 'ADD_FOLDER'; payload: { folder: AppStoreFolderType } }
+	| { type: 'UPDATE_FOLDER'; payload: { folder: Partial<AppStoreFolderType> } }
 	| { type: 'DELETE_FOLDER' }
 	| { type: 'SET_FILES'; payload: { files: FileType[] } }
 	| { type: 'ADD_FILE'; payload: { file: FileType } }
@@ -225,10 +225,6 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 
 const useInit = () => {
 	const [store, dispatch] = useReducer(reducer, initialStore);
-	const currentWorkspace = useMemo(
-		() => store.workspaces.find((w) => w.id === store.workspaceId),
-		[store.workspaces, store.workspaceId],
-	);
 
 	const action = {
 		init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
@@ -290,7 +286,7 @@ const useInit = () => {
 		},
 	};
 
-	return { store: { ...store, currentWorkspace }, action };
+	return { store, action };
 };
 
 export type StoreType = ReturnType<typeof useInit>['store'];

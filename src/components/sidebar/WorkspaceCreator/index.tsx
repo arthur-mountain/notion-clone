@@ -14,7 +14,7 @@ import CollaboratorSearch from '@/components/global/Collaborators/Search';
 import CollaboratorList from '@/components/global/Collaborators/List';
 import useCollaborators from '@/components/global/Collaborators/use-collaborators';
 
-const WorkspaceCreator = () => {
+const WorkspaceCreator = ({ onClose }: { onClose: () => void }) => {
 	const {
 		store: { user },
 	} = useUser();
@@ -57,6 +57,7 @@ const WorkspaceCreator = () => {
 				);
 				toast({ title: 'Success', description: 'Created the workspace' });
 				router.refresh();
+				onClose();
 			}
 		} catch {
 		} finally {

@@ -23,7 +23,7 @@ const WorkspaceDropdown = ({
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const activeWorkspace = store.currentWorkspace || defaultWorkspace;
 
-	const handleClick = useCallback(() => {
+	const onClose = useCallback(() => {
 		setIsModalOpen(false);
 	}, []);
 
@@ -41,12 +41,14 @@ const WorkspaceDropdown = ({
 	}, [privateWorkspaces, sharedWorkspaces, collaboratingWorkspaces]);
 
 	return (
-		<div className='relative inline-block text-left'>
+		<div className='relative'>
 			<div onClickCapture={() => setIsModalOpen(!isModalOpen)}>
 				{activeWorkspace ? (
 					<SelectedWorkspace workspace={activeWorkspace} />
 				) : (
-					'Select a workspace'
+					<span className='flex rounded-md hover:bg-muted transition-all flex-row p-2 gap-4 justify-center cursor-pointer items-center my-2'>
+						Select a workspace
+					</span>
 				)}
 			</div>
 			{isModalOpen && (
@@ -61,7 +63,7 @@ const WorkspaceDropdown = ({
 										<SelectedWorkspace
 											key={workspace.id}
 											workspace={workspace}
-											onClick={handleClick}
+											onClick={onClose}
 										/>
 									))}
 								</>
@@ -74,7 +76,7 @@ const WorkspaceDropdown = ({
 										<SelectedWorkspace
 											key={workspace.id}
 											workspace={workspace}
-											onClick={handleClick}
+											onClick={onClose}
 										/>
 									))}
 								</>
@@ -87,7 +89,7 @@ const WorkspaceDropdown = ({
 										<SelectedWorkspace
 											key={workspace.id}
 											workspace={workspace}
-											onClick={handleClick}
+											onClick={onClose}
 										/>
 									))}
 								</>
@@ -95,7 +97,7 @@ const WorkspaceDropdown = ({
 						</div>
 						<CustomDialog
 							header='Create A Workspace'
-							content={<WorkspaceCreator />}
+							content={<WorkspaceCreator onClose={onClose} />}
 							description='Workspaces give you the power to collaborate with others. You can change your workspace privacy settings after creating the workspace too.'
 						>
 							<div className='flex transition-all hover:bg-muted justify-center items-center gap-2 p-2 w-full'>

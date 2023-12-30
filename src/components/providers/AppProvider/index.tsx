@@ -1,4 +1,6 @@
 'use client';
+import type { FileType } from '@/lib/supabase/types';
+import { usePathname } from 'next/navigation';
 import React, {
 	createContext,
 	useContext,
@@ -6,11 +8,23 @@ import React, {
 	useMemo,
 	type PropsWithChildren,
 } from 'react';
-import { usePathname } from 'next/navigation';
-import useInit, { type StoreType, type ActionType } from './use-init';
+import useInit, {
+	type StoreType,
+	type ActionType,
+	type AppStoreFolderType,
+	type AppStoreWorkspaceType,
+} from './use-init';
 
 const AppStoreContext = createContext<
-	{ store: StoreType; action: ActionType } | undefined
+	| {
+			store: StoreType & {
+				currentWorkspace?: AppStoreWorkspaceType;
+				currentFolder?: AppStoreFolderType;
+				currentFile?: FileType;
+			};
+			action: ActionType;
+	  }
+	| undefined
 >(undefined);
 
 export const AppStoreProvider = ({ children }: PropsWithChildren) => {
@@ -20,6 +34,18 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 		() => pathname.split('/').filter(Boolean),
 		[pathname],
 	);
+	const currentWorkspace = useMemo(
+		() => store.workspaces.find((workspace) => workspace.id === workspaceId),
+		[store.workspaces, workspaceId],
+	);
+	const currentFolder = useMemo(
+		() => currentWorkspace?.folders?.find((folder) => folder.id === folderId),
+		[currentWorkspace, folderId],
+	);
+	const currentFile = useMemo(
+		() => currentFolder?.files?.find((file) => file.id === fileId),
+		[currentFolder, fileId],
+	);
 
 	useEffect(() => {
 		action.init({ workspaceId, folderId, fileId });
@@ -27,11 +53,21 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 	}, [workspaceId, folderId, fileId]);
 
 	useEffect(() => {
-		console.log('App Store Changed', store);
-	}, [store]);
+		console.log('App Store Changed', {
+			...store,
+			currentWorkspace,
+			currentFolder,
+			currentFile,
+		});
+	}, [store, currentWorkspace, currentFolder, currentFile]);
 
 	return (
-		<AppStoreContext.Provider value={{ store, action }}>
+		<AppStoreContext.Provider
+			value={{
+				store: { ...store, currentWorkspace, currentFolder, currentFile },
+				action,
+			}}
+		>
 			{children}
 		</AppStoreContext.Provider>
 	);
