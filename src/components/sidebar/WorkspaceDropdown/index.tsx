@@ -21,7 +21,9 @@ const WorkspaceDropdown = ({
 }: Props) => {
 	const { store, action } = useAppStore();
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const activeWorkspace = store.currentWorkspace || defaultWorkspace;
+	const activeWorkspace =
+		store.workspaces.find((w) => w.id === store.workspaceId) ||
+		defaultWorkspace;
 
 	const onClose = useCallback(() => {
 		setIsModalOpen(false);

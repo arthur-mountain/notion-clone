@@ -18,9 +18,10 @@ type Props = {
 
 const PermissionsSelect = ({ initialValue, onChange }: Props) => {
 	const {
-		store: { currentWorkspace },
+		store: { workspaces, workspaceId },
 		action: { updateWorkspace },
 	} = useAppStore();
+	const currentWorkspace = workspaces.find((w) => w.id === workspaceId);
 
 	const onPermissionChange = useCallback(
 		(value: 'private' | 'shared') => {

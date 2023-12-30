@@ -23,13 +23,16 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 		action: { checkIsSubscriptionValid },
 	} = useUser();
 	const {
-		store: { currentWorkspace, folderId },
+		store: { workspaces, folderId },
 		action,
 	} = useAppStore();
 	const { toast } = useToast();
 	const folders = useMemo(
-		() => currentWorkspace?.folders?.filter((folder) => !folder.inTrash) || [],
-		[currentWorkspace],
+		() =>
+			workspaces
+				.find((w) => w.id === workspaceId)
+				?.folders?.filter((folder) => !folder.inTrash) || [],
+		[workspaces, workspaceId],
 	);
 
 	const addFolder = async () => {
@@ -67,7 +70,8 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 	};
 
 	useEffect(() => {
-		if (currentWorkspace && workspaceFolders.length) {
+		if (workspaceFolders.length) {
+			const currentWorkspace = workspaces.find((w) => w.id === workspaceId);
 			action.setFolders({
 				folders: workspaceFolders.map((folder) => ({
 					...folder,
@@ -78,7 +82,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [workspaceFolders]);
+	}, [workspaceId, workspaceFolders]);
 
 	useEffect(() => {
 		if (!folderId) return;
@@ -102,7 +106,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 					/>
 				</Tooltip>
 			</div>
-			{user && currentWorkspace && (
+			{user && workspaceId && (
 				<Accordion
 					type='multiple'
 					defaultValue={[folderId || '']}
@@ -114,7 +118,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 							type='folder'
 							user={user}
 							mainId={folder.id}
-							ids={[currentWorkspace.id, folder.id]}
+							ids={[workspaceId, folder.id]}
 							title={folder.title}
 							iconId={folder.iconId}
 							files={folder.files?.filter((file) => !file.inTrash)}

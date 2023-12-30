@@ -20,11 +20,11 @@ const useInit = () => {
 	const router = useRouter();
 	const { toast } = useToast();
 	const {
-		store: { user, subscription, isSubscriptionModalOpen },
+		store: { subscription, isSubscriptionModalOpen },
 		action: { toggleSubscriptionDialog },
 	} = useUser();
 	const {
-		store: { workspaceId, currentWorkspace },
+		store: { workspaces, workspaceId },
 		action,
 	} = useAppStore();
 	const [collaborators, setCollaborators] = useState<UserType[]>([]);
@@ -100,7 +100,7 @@ const useInit = () => {
 		store: {
 			isSubscriptionModalOpen,
 			isOpenAlertMessage,
-			currentWorkspace,
+			currentWorkspace: workspaces.find(({ id }) => id === workspaceId),
 			isUploadingLogo,
 			collaborators,
 			subscription,
