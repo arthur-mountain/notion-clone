@@ -72,7 +72,7 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 			const { data: subscription, error } = await getFirstSubscriptionByUserId(
 				user.id,
 			);
-			if (error || !subscription) {
+			if (error) {
 				toast({
 					title: 'Unexpected Error',
 					description: 'Oppse! An unexpected error happened. Try again later.',

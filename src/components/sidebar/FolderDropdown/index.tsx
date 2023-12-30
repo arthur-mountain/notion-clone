@@ -3,6 +3,7 @@ import type { FolderType } from '@/lib/supabase/types';
 import React, { useEffect, useMemo } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { MAX_FOLDERS_FREE_PLAN } from '@/constants/common';
+import { getFiles } from '@/lib/supabase/schemas/files/queries';
 import { createFolder } from '@/lib/supabase/schemas/folders/queries';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useUser } from '@/components/providers/UserProvider';
@@ -53,7 +54,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 			workspaceId,
 			bannerUrl: '',
 		};
-		action.addFolder({ workspaceId, folder: { ...newFolder, files: [] } });
+		action.addFolder({ folder: { ...newFolder, files: [] } });
 
 		if ((await createFolder(newFolder)).error) {
 			toast({
@@ -75,7 +76,6 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 				(workspace) => workspace.id === workspaceId,
 			);
 			action.setFolders({
-				workspaceId,
 				folders: workspaceFolders.map((folder) => ({
 					...folder,
 					files:
@@ -83,7 +83,18 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 				})),
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [workspaceId, workspaceFolders]);
+
+	useEffect(() => {
+		if (!workspaceId || !folderId) return;
+		(async () => {
+			const { data: files, error: filesError } = await getFiles(folderId);
+			if (filesError) return;
+			action.setFiles({ files });
+		})();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [workspaceId, folderId]);
 
 	return (
 		<>
@@ -112,7 +123,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 							ids={[workspace.id, folder.id]}
 							title={folder.title}
 							iconId={folder.iconId}
-							files={folder.files}
+							files={folder.files?.filter((file) => !file.inTrash)}
 						/>
 					))}
 				</Accordion>

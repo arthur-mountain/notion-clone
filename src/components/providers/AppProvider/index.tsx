@@ -7,15 +7,10 @@ import React, {
 	type PropsWithChildren,
 } from 'react';
 import { usePathname } from 'next/navigation';
-import { getFiles } from '@/lib/supabase/schemas/files/queries';
 import useInit, { type StoreType, type ActionType } from './use-init';
 
 const AppStoreContext = createContext<
-	| {
-			store: StoreType;
-			action: ActionType;
-	  }
-	| undefined
+	{ store: StoreType; action: ActionType } | undefined
 >(undefined);
 
 export const AppStoreProvider = ({ children }: PropsWithChildren) => {
@@ -30,16 +25,6 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 		action.init({ workspaceId, folderId, fileId });
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [workspaceId, folderId, fileId]);
-
-	useEffect(() => {
-		if (!workspaceId || !folderId) return;
-		(async () => {
-			const { data: files, error: filesError } = await getFiles(folderId);
-			if (filesError) return;
-			action.setFiles({ workspaceId, folderId, files });
-		})();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [workspaceId, folderId]);
 
 	useEffect(() => {
 		console.log('App Store Changed', store);

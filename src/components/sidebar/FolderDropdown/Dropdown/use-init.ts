@@ -49,7 +49,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'folder': {
 				funcOrError = folderId
 					? () => {
-							action.updateFolder({ workspaceId, folderId, folder: data });
+							action.updateFolder({ folder: data });
 							return updateFolder(data, folderId);
 					  }
 					: 'FolderId not founded';
@@ -59,12 +59,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 				funcOrError =
 					folderId && fileId
 						? () => {
-								action.updateFile({
-									workspaceId,
-									folderId,
-									fileId,
-									file: data,
-								});
+								action.updateFile({ file: data });
 								return updateFile(data, fileId);
 						  }
 						: 'One of folderId and fileId not founded';
@@ -93,7 +88,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'folder': {
 				funcOrError = folderId
 					? () => {
-							action.updateFolder({ workspaceId, folderId, folder: data });
+							action.updateFolder({ folder: data });
 							return updateFolder(data, folderId);
 					  }
 					: 'FolderId not founded';
@@ -102,12 +97,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			case 'file': {
 				funcOrError = folderId
 					? () => {
-							action.updateFile({
-								workspaceId,
-								folderId,
-								fileId,
-								file: data,
-							});
+							action.updateFile({ file: data });
 							return updateFile(data, fileId);
 					  }
 					: 'One of folderId and fileId not founded';
@@ -144,7 +134,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			bannerUrl: '',
 		};
 
-		action.addFile({ workspaceId, folderId, file: newFile });
+		action.addFile({ file: newFile });
 		if ((await createFile(newFile)).error) {
 			toast({
 				title: 'Error',

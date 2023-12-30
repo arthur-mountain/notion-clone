@@ -1,4 +1,6 @@
 'use client';
+import { deleteFile } from '@/lib/supabase/schemas/files/queries';
+import { deleteFolder } from '@/lib/supabase/schemas/folders/queries';
 import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
 import { useReducer, useMemo } from 'react';
 
@@ -9,9 +11,9 @@ export type WorkspacesType = WorkspaceType & {
 
 type Store = {
 	workspaces: WorkspacesType[];
-	workspaceId?: string;
-	folderId?: string;
-	fileId?: string;
+	workspaceId: string;
+	folderId: string;
+	fileId: string;
 };
 
 type Action =
@@ -26,53 +28,21 @@ type Action =
 			payload: { workspace: Partial<WorkspacesType> };
 	  }
 	| { type: 'DELETE_WORKSPACE' }
-	| {
-			type: 'SET_FOLDERS';
-			payload: { workspaceId: string; folders: FoldersType[] };
-	  }
-	| {
-			type: 'ADD_FOLDER';
-			payload: { workspaceId: string; folder: FoldersType };
-	  }
-	| {
-			type: 'UPDATE_FOLDER';
-			payload: {
-				workspaceId: string;
-				folderId: string;
-				folder: Partial<FoldersType>;
-			};
-	  }
-	| {
-			type: 'DELETE_FOLDER';
-			payload: { workspaceId: string; folderId: string };
-	  }
-	| {
-			type: 'SET_FILES';
-			payload: { workspaceId: string; folderId: string; files: FileType[] };
-	  }
-	| {
-			type: 'ADD_FILE';
-			payload: { workspaceId: string; folderId: string; file: FileType };
-	  }
-	| {
-			type: 'DELETE_FILE';
-			payload: { workspaceId: string; folderId: string; fileId: string };
-	  }
-	| {
-			type: 'UPDATE_FILE';
-			payload: {
-				workspaceId: string;
-				folderId: string;
-				fileId: string;
-				file: Partial<FileType>;
-			};
-	  }
-	| {
-			type: 'UPDATE_PERMISSION';
-			payload: { permission: 'shared' | 'private' };
-	  };
+	| { type: 'SET_FOLDERS'; payload: { folders: FoldersType[] } }
+	| { type: 'ADD_FOLDER'; payload: { folder: FoldersType } }
+	| { type: 'UPDATE_FOLDER'; payload: { folder: Partial<FoldersType> } }
+	| { type: 'DELETE_FOLDER' }
+	| { type: 'SET_FILES'; payload: { files: FileType[] } }
+	| { type: 'ADD_FILE'; payload: { file: FileType } }
+	| { type: 'UPDATE_FILE'; payload: { file: Partial<FileType> } }
+	| { type: 'DELETE_FILE' };
 
-const initialStore: Store = { workspaces: [] };
+const initialStore: Store = {
+	workspaces: [],
+	workspaceId: '',
+	folderId: '',
+	fileId: '',
+};
 
 const sortByCreatedAt = (a: any, b: any) =>
 	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
@@ -81,9 +51,9 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 		case 'INIT':
 			return {
 				...store,
-				workspaceId: action.payload.workspaceId,
-				folderId: action.payload.folderId,
-				fileId: action.payload.fileId,
+				workspaceId: action.payload.workspaceId || '',
+				folderId: action.payload.folderId || '',
+				fileId: action.payload.fileId || '',
 			};
 		case 'SET_WORKSPACES':
 			return { ...store, workspaces: action.payload.workspaces };
@@ -112,7 +82,7 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: action.payload.folders.sort(sortByCreatedAt),
@@ -124,7 +94,7 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: [...workspace.folders, action.payload.folder].sort(
@@ -138,11 +108,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.filter(
-									(folder) => folder.id !== action.payload.folderId,
+									(folder) => folder.id !== store.folderId,
 								),
 						  }
 						: workspace;
@@ -152,11 +122,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === action.payload.folderId
+									return folder.id === store.folderId
 										? { ...folder, ...action.payload.folder }
 										: folder;
 								}),
@@ -168,11 +138,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === action.payload.folderId
+									return folder.id === store.folderId
 										? {
 												...folder,
 												files: action.payload.files.sort(sortByCreatedAt),
@@ -187,11 +157,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === action.payload.folderId
+									return folder.id === store.folderId
 										? {
 												...folder,
 												files: [...folder.files, action.payload.file].sort(
@@ -208,15 +178,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folder: workspace.folders.map((folder) => {
-									return folder.id === action.payload.folderId
+									return folder.id === store.folderId
 										? {
 												...folder,
 												files: folder.files.filter(
-													(file) => file.id !== action.payload.fileId,
+													(file) => file.id !== store.fileId,
 												),
 										  }
 										: folder;
@@ -229,15 +199,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === action.payload.workspaceId
+					return workspace.id === store.workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === action.payload.folderId
+									return folder.id === store.folderId
 										? {
 												...folder,
 												files: folder.files.map((file) => {
-													return file.id === action.payload.fileId
+													return file.id === store.fileId
 														? { ...file, ...action.payload.file }
 														: file;
 												}),
@@ -260,65 +230,65 @@ const useInit = () => {
 		[store.workspaces, store.workspaceId],
 	);
 
-	const action = useMemo(
-		() => ({
-			init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
-				dispatch({ type: 'INIT', payload });
-			},
-			setFiles: (
-				payload: Extract<Action, { type: 'SET_FILES' }>['payload'],
-			) => {
-				dispatch({ type: 'SET_FILES', payload });
-			},
-			addFile: (payload: Extract<Action, { type: 'ADD_FILE' }>['payload']) => {
-				dispatch({ type: 'ADD_FILE', payload });
-			},
-			updateFile: (
-				payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
-			) => {
-				dispatch({ type: 'UPDATE_FILE', payload });
-			},
-			setFolders: (
-				payload: Extract<Action, { type: 'SET_FOLDERS' }>['payload'],
-			) => {
-				dispatch({ type: 'SET_FOLDERS', payload });
-			},
-			addFolder: (
-				payload: Extract<Action, { type: 'ADD_FOLDER' }>['payload'],
-			) => {
-				dispatch({ type: 'ADD_FOLDER', payload });
-			},
-			updateFolder: (
-				payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
-			) => {
-				dispatch({ type: 'UPDATE_FOLDER', payload });
-			},
-			setWorkspaces: (
-				payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
-			) => {
-				dispatch({ type: 'SET_WORKSPACES', payload });
-			},
-			addWorkspace: (
-				payload: Extract<Action, { type: 'ADD_WORKSPACE' }>['payload'],
-			) => {
-				dispatch({ type: 'ADD_WORKSPACE', payload });
-			},
-			updateWorkspace: (
-				payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
-			) => {
-				dispatch({ type: 'UPDATE_WORKSPACE', payload });
-			},
-			deleteWorkspace: () => {
-				dispatch({ type: 'DELETE_WORKSPACE' });
-			},
-			updatePermission: (
-				payload: Extract<Action, { type: 'UPDATE_PERMISSION' }>['payload'],
-			) => {
-				dispatch({ type: 'UPDATE_PERMISSION', payload });
-			},
-		}),
-		[dispatch],
-	);
+	const action = {
+		init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
+			dispatch({ type: 'INIT', payload });
+		},
+		setFiles: (payload: Extract<Action, { type: 'SET_FILES' }>['payload']) => {
+			dispatch({ type: 'SET_FILES', payload });
+		},
+		addFile: (payload: Extract<Action, { type: 'ADD_FILE' }>['payload']) => {
+			dispatch({ type: 'ADD_FILE', payload });
+		},
+		updateFile: (
+			payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
+		) => {
+			dispatch({ type: 'UPDATE_FILE', payload });
+		},
+		deleteFile: async () => {
+			if (!store.fileId) return;
+			dispatch({ type: 'DELETE_FILE' });
+			await deleteFile(store.fileId);
+		},
+		setFolders: (
+			payload: Extract<Action, { type: 'SET_FOLDERS' }>['payload'],
+		) => {
+			dispatch({ type: 'SET_FOLDERS', payload });
+		},
+		addFolder: (
+			payload: Extract<Action, { type: 'ADD_FOLDER' }>['payload'],
+		) => {
+			dispatch({ type: 'ADD_FOLDER', payload });
+		},
+		updateFolder: (
+			payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
+		) => {
+			dispatch({ type: 'UPDATE_FOLDER', payload });
+		},
+		deleteFolder: async () => {
+			if (!store.folderId) return;
+			dispatch({ type: 'DELETE_FOLDER' });
+			await deleteFolder(store.folderId);
+		},
+		setWorkspaces: (
+			payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
+		) => {
+			dispatch({ type: 'SET_WORKSPACES', payload });
+		},
+		addWorkspace: (
+			payload: Extract<Action, { type: 'ADD_WORKSPACE' }>['payload'],
+		) => {
+			dispatch({ type: 'ADD_WORKSPACE', payload });
+		},
+		updateWorkspace: (
+			payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
+		) => {
+			dispatch({ type: 'UPDATE_WORKSPACE', payload });
+		},
+		deleteWorkspace: () => {
+			dispatch({ type: 'DELETE_WORKSPACE' });
+		},
+	};
 
 	return { store: { ...store, currentWorkspace }, action };
 };
