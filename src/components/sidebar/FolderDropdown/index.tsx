@@ -4,7 +4,6 @@ import React, { useEffect, useMemo } from 'react';
 import { PlusIcon } from 'lucide-react';
 import { MAX_FOLDERS_FREE_PLAN } from '@/constants/common';
 import { getFiles } from '@/lib/supabase/schemas/files/queries';
-import { createFolder } from '@/lib/supabase/schemas/folders/queries';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useUser } from '@/components/providers/UserProvider';
 import Tooltip from '@/components/global/Tooltip';
@@ -53,9 +52,8 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 			workspaceId,
 			bannerUrl: '',
 		};
-		action.addFolder({ folder: { ...newFolder, files: [] } });
 
-		if ((await createFolder(newFolder)).error) {
+		if ((await action.addFolder({ folder: newFolder })).error) {
 			toast({
 				title: 'Error',
 				variant: 'destructive',

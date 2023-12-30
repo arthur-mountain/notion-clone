@@ -8,8 +8,14 @@ import {
 import {
 	updateFolder,
 	deleteFolder,
+	createFolder,
 } from '@/lib/supabase/schemas/folders/queries';
 import { useReducer } from 'react';
+import {
+	createWorkspace,
+	deleteWorkspace,
+	updateWorkspace,
+} from '@/lib/supabase/schemas/workspaces/queries';
 
 export type AppStoreFolderType = FolderType & { files: FileType[] };
 export type AppStoreWorkspaceType = WorkspaceType & {
@@ -237,10 +243,11 @@ const useInit = () => {
 		init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
 			dispatch({ type: 'INIT', payload });
 		},
+		// FILE
 		setFiles: (payload: Extract<Action, { type: 'SET_FILES' }>['payload']) => {
 			dispatch({ type: 'SET_FILES', payload });
 		},
-		addFile: (payload: Extract<Action, { type: 'ADD_FILE' }>['payload']) => {
+		addFile: (payload: { file: FileType }) => {
 			dispatch({ type: 'ADD_FILE', payload });
 			return createFile(payload.file);
 		},
@@ -255,15 +262,18 @@ const useInit = () => {
 			dispatch({ type: 'DELETE_FILE' });
 			return deleteFile(store.fileId);
 		},
+		// FOLDER
 		setFolders: (
 			payload: Extract<Action, { type: 'SET_FOLDERS' }>['payload'],
 		) => {
 			dispatch({ type: 'SET_FOLDERS', payload });
 		},
-		addFolder: (
-			payload: Extract<Action, { type: 'ADD_FOLDER' }>['payload'],
-		) => {
-			dispatch({ type: 'ADD_FOLDER', payload });
+		addFolder: (payload: { folder: FolderType }) => {
+			dispatch({
+				type: 'ADD_FOLDER',
+				payload: { folder: { ...payload.folder, files: [] } },
+			});
+			return createFolder(payload.folder);
 		},
 		updateFolder: (
 			payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
@@ -276,23 +286,30 @@ const useInit = () => {
 			dispatch({ type: 'DELETE_FOLDER' });
 			return deleteFolder(store.folderId);
 		},
+		// WORKSPACE
 		setWorkspaces: (
 			payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
 		) => {
 			dispatch({ type: 'SET_WORKSPACES', payload });
 		},
-		addWorkspace: (
-			payload: Extract<Action, { type: 'ADD_WORKSPACE' }>['payload'],
-		) => {
-			dispatch({ type: 'ADD_WORKSPACE', payload });
+		addWorkspace: (payload: { workspace: WorkspaceType }) => {
+			dispatch({
+				type: 'ADD_WORKSPACE',
+				payload: { workspace: { ...payload.workspace, folders: [] } },
+			});
+			return createWorkspace(payload.workspace);
 		},
 		updateWorkspace: (
 			payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
 		) => {
+			if (!store.workspaceId) return;
 			dispatch({ type: 'UPDATE_WORKSPACE', payload });
+			return updateWorkspace(payload.workspace, store.workspaceId);
 		},
 		deleteWorkspace: () => {
+			if (!store.workspaceId) return;
 			dispatch({ type: 'DELETE_WORKSPACE' });
+			return deleteWorkspace(store.workspaceId);
 		},
 	};
 

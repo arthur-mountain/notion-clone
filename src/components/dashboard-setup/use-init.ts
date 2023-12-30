@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { upload } from '@/lib/supabase/utils/client/upload';
-import { createWorkspace } from '@/lib/supabase/schemas/workspaces/queries';
 import { useAppStore } from '../providers/AppProvider';
 import { useToast } from '../ui/use-toast';
 import {
@@ -78,11 +77,10 @@ const useInit = ({ user }: InitialParams) => {
 				bannerUrl: '',
 				permission: 'private',
 			};
-			const { error } = await createWorkspace(newWorkspace);
 
-			if (error) throw new Error(error);
-
-			action.addWorkspace({ workspace: { ...newWorkspace, folders: [] } });
+			if ((await action.addWorkspace({ workspace: newWorkspace })).error) {
+				throw new Error();
+			}
 
 			toast({
 				title: 'Workspace Created',

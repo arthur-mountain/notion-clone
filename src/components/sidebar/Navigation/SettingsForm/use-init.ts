@@ -7,10 +7,6 @@ import {
 	getCollaborators,
 	removeCollaborators,
 } from '@/lib/supabase/schemas/collaborators/queries';
-import {
-	deleteWorkspace,
-	updateWorkspace,
-} from '@/lib/supabase/schemas/workspaces/queries';
 import { upload } from '@/lib/supabase/utils/client/upload';
 import { useAppStore } from '@/components/providers/AppProvider';
 import { useUser } from '@/components/providers/UserProvider';
@@ -45,8 +41,7 @@ const useInit = () => {
 		if (!workspaceId || !value) return;
 		if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
 		titleTimerRef.current = setTimeout(async () => {
-			action.updateWorkspace({ workspace: { title: value } });
-			await updateWorkspace({ title: value }, workspaceId);
+			await action.updateWorkspace({ workspace: { title: value } });
 			router.refresh();
 		}, 500);
 	};
@@ -71,16 +66,14 @@ const useInit = () => {
 			return;
 		}
 
-		action.updateWorkspace({ workspace: { logo: imgPath } });
-		await updateWorkspace({ logo: imgPath }, workspaceId);
+		await action.updateWorkspace({ workspace: { logo: imgPath } });
 		router.refresh();
 	};
 
 	const onDeleteWorkspace = async () => {
 		if (!workspaceId) return;
-		await deleteWorkspace(workspaceId);
+		await action.deleteWorkspace();
 		toast({ title: 'Successfully deleted your workspae' });
-		action.deleteWorkspace();
 		router.replace('/dashboard');
 	};
 
