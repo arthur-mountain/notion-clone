@@ -4,10 +4,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
-
 import { upload } from '@/lib/supabase/utils/client/upload';
-import { useAppStore } from '../providers/AppProvider';
-import { useToast } from '../ui/use-toast';
+import { useAppStore } from '@/components/Providers/AppProvider';
+import { useToast } from '@/components/ui/use-toast';
 import {
 	createWorkspaceFormSchema,
 	type CreateWorkspaceFormSchemaType,

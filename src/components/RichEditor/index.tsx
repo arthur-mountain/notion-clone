@@ -8,19 +8,19 @@ import Editor from './Editor';
 
 const RichEditor = ({ id, type, data }: Props) => {
 	const {
-		store: { stateData },
+		store: { storeData },
 		action,
 	} = useInit({ id, type, data });
 	const router = useRouter();
 	const pathname = usePathname();
 	const [quillIns, setQuillIns] = useState<Quill>();
 	console.log(`🚀 ~ RichEditor ~ quillIns:`, quillIns);
-	if (!stateData) return null;
-	console.log(`🚀 ~ RichEditor ~ stateData:`, stateData);
+	if (!storeData) return null;
+	console.log(`🚀 ~ RichEditor ~ storeData:`, storeData);
 
 	return (
 		<>
-			{stateData.inTrash && (
+			{storeData.inTrash && (
 				<article className='py-2 z-40 bg-peach-500 flex  md:flex-row flex-col justify-center items-center gap-4 flex-wrap'>
 					<div className='flex flex-col md:flex-row gap-2 justify-center items-center'>
 						<span className='text-white'>This {type} is in the trash.</span>
@@ -41,7 +41,7 @@ const RichEditor = ({ id, type, data }: Props) => {
 							Delete
 						</Button>
 					</div>
-					<span className='text-sm text-white'>{stateData.inTrash}</span>
+					<span className='text-sm text-white'>{storeData.inTrash}</span>
 				</article>
 			)}
 			<Editor setQuillIns={setQuillIns} />

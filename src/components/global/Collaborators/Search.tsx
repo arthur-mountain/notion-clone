@@ -21,7 +21,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { getUsersByEmail } from '@/lib/supabase/schemas/users/queries';
-import { useUser } from '../../providers/UserProvider';
+import { useUser } from '../../Providers/UserProvider';
 
 type Props = PropsWithChildren<{
 	existsCollaboratorIdsSet: Set<string>;

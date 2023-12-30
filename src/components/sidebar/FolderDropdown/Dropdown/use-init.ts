@@ -1,6 +1,6 @@
 import type { AuthUser } from '@supabase/supabase-js';
 import type { FileType } from '@/lib/supabase/types';
-import { useAppStore } from '@/components/providers/AppProvider';
+import { useAppStore } from '@/components/Providers/AppProvider';
 import { useToast } from '@/components/ui/use-toast';
 
 type UseInitType = { ids: string[]; type: 'folder' | 'file'; user: AuthUser };

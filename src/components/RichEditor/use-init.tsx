@@ -1,8 +1,7 @@
 import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
-import { useAppStore } from '../providers/AppProvider';
+import { useAppStore } from '../Providers/AppProvider';
 import { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { deleteFile } from '@/lib/supabase/schemas/files/queries';
 
 export type Props = {
 	id: string;
@@ -17,7 +16,7 @@ const useInit = ({ id, type, data }: Props) => {
 	} = useAppStore();
 	const router = useRouter();
 
-	const stateData = useMemo(() => {
+	const storeData = useMemo(() => {
 		switch (type) {
 			case 'workspace': {
 				return workspaces.find((workspace) => workspace.id === workspaceId);
@@ -69,7 +68,7 @@ const useInit = ({ id, type, data }: Props) => {
 	};
 
 	return {
-		store: { stateData },
+		store: { storeData },
 		action: { restore, remove },
 	};
 };

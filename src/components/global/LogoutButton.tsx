@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { type PropsWithChildren } from 'react';
 import { createClientComponentClient } from '@/lib/supabase/utils/client';
 import { Button } from '@/components/ui/button';
-import { useAppStore } from '@/components/providers/AppProvider';
+import { useAppStore } from '@/components/Providers/AppProvider';
 import { cn } from '@/lib/utils';
 
 type Props = PropsWithChildren<{ className?: string }>;

@@ -15,7 +15,7 @@ import { postData } from '@/services/postData';
 import { formatPrice } from '@/lib/utils/formatter/format-price';
 import { getStripe } from '@/lib/utils/stripe';
 /** FIXME: implement upper those three func */
-import { useUser } from '@/components/providers/UserProvider';
+import { useUser } from '@/components/Providers/UserProvider';
 import Loader from './Loader';
 
 type Props = {

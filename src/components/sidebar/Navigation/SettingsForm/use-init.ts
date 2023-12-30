@@ -8,8 +8,8 @@ import {
 	removeCollaborators,
 } from '@/lib/supabase/schemas/collaborators/queries';
 import { upload } from '@/lib/supabase/utils/client/upload';
-import { useAppStore } from '@/components/providers/AppProvider';
-import { useUser } from '@/components/providers/UserProvider';
+import { useAppStore } from '@/components/Providers/AppProvider';
+import { useUser } from '@/components/Providers/UserProvider';
 // import { postData } from '@/lib/utils';
 
 const useInit = () => {

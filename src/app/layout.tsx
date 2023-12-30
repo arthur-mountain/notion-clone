@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import { Noto_Sans } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
-import { ThemeProvider } from '@/components/providers/NextThemeProvider';
-import { AppStoreProvider } from '@/components/providers/AppProvider';
-import { UserProvider } from '@/components/providers/UserProvider';
+import { ThemeProvider } from '@/components/Providers/NextThemeProvider';
+import { AppStoreProvider } from '@/components/Providers/AppProvider';
+import { UserProvider } from '@/components/Providers/UserProvider';
 import { cn } from '@/lib/utils';
 import '@/lib/supabase/db';
 import './globals.css';

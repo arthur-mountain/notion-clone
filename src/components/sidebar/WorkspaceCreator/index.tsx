@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
 import { createWorkspace } from '@/lib/supabase/schemas/workspaces/queries';
 import { addCollaborators } from '@/lib/supabase/schemas/collaborators/queries';
-import { useUser } from '@/components/providers/UserProvider';
+import { useUser } from '@/components/Providers/UserProvider';
 import PermissionsSelect from '@/components/global/PermissionsSelect';
 import CollaboratorSearch from '@/components/global/Collaborators/Search';
 import CollaboratorList from '@/components/global/Collaborators/List';

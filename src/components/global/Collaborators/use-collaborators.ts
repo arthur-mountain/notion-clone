@@ -6,8 +6,8 @@ import {
 	getCollaborators,
 	removeCollaborators,
 } from '@/lib/supabase/schemas/collaborators/queries';
-import { useAppStore } from '@/components/providers/AppProvider';
-import { useUser } from '@/components/providers/UserProvider';
+import { useAppStore } from '@/components/Providers/AppProvider';
+import { useUser } from '@/components/Providers/UserProvider';
 
 const useCollaborators = ({
 	type = 'update',

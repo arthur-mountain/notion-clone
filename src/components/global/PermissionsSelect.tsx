@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from '@/components/ui/select';
-import { useAppStore } from '../providers/AppProvider';
+import { useAppStore } from '../Providers/AppProvider';
 
 type Props = {
 	initialValue?: 'private' | 'shared';

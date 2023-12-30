@@ -2,7 +2,7 @@
 import type { WorkspaceType } from '@/lib/supabase/types';
 import React, { useCallback, useEffect, useState } from 'react';
 import CustomDialog from '@/components/global/CustomDialog';
-import { useAppStore } from '../../providers/AppProvider';
+import { useAppStore } from '../../Providers/AppProvider';
 import WorkspaceCreator from '../WorkspaceCreator';
 import SelectedWorkspace from './SelectedWorkspace';
 

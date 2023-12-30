@@ -3,7 +3,7 @@ import type { SubscriptionType } from '@/lib/supabase/types';
 import { DiamondIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { MAX_FOLDERS_FREE_PLAN } from '@/constants/common';
-import { useAppStore } from '@/components/providers/AppProvider';
+import { useAppStore } from '@/components/Providers/AppProvider';
 import { Progress } from '@/components/ui/progress';
 
 type Props = {
