@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 import { createServerComponentClient } from '@/lib/supabase/utils/server';
 import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/queries';
 import { getFirstWorkspaceByUserId } from '@/lib/supabase/schemas/workspaces/queries';
-import DashboardSetup from '@/components/dashboard-setup';
+import DashboardForm from '@/components/DashboardForm';
 
 const DashboardPage = async () => {
 	const {
@@ -20,7 +20,7 @@ const DashboardPage = async () => {
 	if (!workspace) {
 		return (
 			<div className='bg-background h-screen w-screen flex justify-center items-center'>
-				<DashboardSetup user={user} subscription={subscription} />
+				<DashboardForm user={user} subscription={subscription} />
 			</div>
 		);
 	}
