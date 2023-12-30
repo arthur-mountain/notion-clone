@@ -35,6 +35,7 @@ const Dropdown = ({ type, user, mainId, ids, title, iconId, files }: Props) => {
 		if (!isEditing) return;
 		setIsEditing(false);
 		if (!e.currentTarget?.value) return;
+		if (e.currentTarget.value === title) return;
 		onUpdateTitle(e.currentTarget.value);
 	};
 	const { groupIdentifies, listStyles, hoverStyles } = useMemo(
@@ -47,6 +48,7 @@ const Dropdown = ({ type, user, mainId, ids, title, iconId, files }: Props) => {
 			value={mainId}
 			className={listStyles}
 			onClick={(e) => {
+				e.stopPropagation();
 				e.preventDefault();
 				router.push(`/dashboard/${ids.join('/')}`);
 			}}
@@ -59,7 +61,13 @@ const Dropdown = ({ type, user, mainId, ids, title, iconId, files }: Props) => {
 				<div className={groupIdentifies}>
 					<div className='flex gap-4 items-center justify-center overflow-hidden'>
 						<div className='relative'>
-							<EmojiPicker onChange={onUpdateEmoji}>{iconId}</EmojiPicker>
+							<EmojiPicker
+								onChange={(updatedEmoji) => {
+									updatedEmoji !== iconId && onUpdateEmoji(updatedEmoji);
+								}}
+							>
+								{iconId}
+							</EmojiPicker>
 						</div>
 						<input
 							type='text'

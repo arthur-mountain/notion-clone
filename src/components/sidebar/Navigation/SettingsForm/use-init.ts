@@ -1,5 +1,5 @@
 'use client';
-import type { UserType, WorkspaceType } from '@/lib/supabase/types';
+import type { UserType } from '@/lib/supabase/types';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useToast } from '@/components/ui/use-toast';
@@ -24,13 +24,12 @@ const useInit = () => {
 		action: { toggleSubscriptionDialog },
 	} = useUser();
 	const {
-		store: { workspaces, workspaceId, currentWorkspace },
+		store: { workspaceId, currentWorkspace },
 		action,
 	} = useAppStore();
 	const [collaborators, setCollaborators] = useState<UserType[]>([]);
-	const [workspaceDetails, setWorkspaceDetails] = useState<WorkspaceType>();
 	const titleTimerRef = useRef<ReturnType<typeof setTimeout>>();
-	const [uploadingLogo, setUploadingLogo] = useState(false);
+	const [isUploadingLogo, setIsUploadingLogo] = useState(false);
 	const [isOpenAlertMessage, setIsOpenAlertMessage] = useState(false);
 
 	const onAlertConfirm = async () => {
@@ -44,24 +43,24 @@ const useInit = () => {
 
 	const onChangeWorkspaceName = (value: string) => {
 		if (!workspaceId || !value) return;
-		action.updateWorkspace({ workspace: { title: value } });
-
 		if (titleTimerRef.current) clearTimeout(titleTimerRef.current);
 		titleTimerRef.current = setTimeout(async () => {
-			// await updateWorkspace({ title: e.target.value }, workspaceId);
+			action.updateWorkspace({ workspace: { title: value } });
+			await updateWorkspace({ title: value }, workspaceId);
+			router.refresh();
 		}, 500);
 	};
 
 	const onChangeWorkspaceLogo = async (file: File) => {
 		if (!workspaceId || !file) return;
-		setUploadingLogo(true);
+		setIsUploadingLogo(true);
 		const imgPath = await upload({
 			storageName: 'workspace-logos',
 			fileName: `workspaceLogo.${crypto.randomUUID()}`,
 			file,
 			storageConfig: { cacheControl: '3600', upsert: true },
 		});
-		setUploadingLogo(false);
+		setIsUploadingLogo(false);
 
 		if (!imgPath) {
 			toast({
@@ -74,6 +73,7 @@ const useInit = () => {
 
 		action.updateWorkspace({ workspace: { logo: imgPath } });
 		await updateWorkspace({ logo: imgPath }, workspaceId);
+		router.refresh();
 	};
 
 	const onDeleteWorkspace = async () => {
@@ -85,13 +85,6 @@ const useInit = () => {
 	};
 
 	useEffect(() => {
-		const showingWorkspace = workspaces.find(
-			(workspace) => workspace.id === workspaceId,
-		);
-		if (showingWorkspace) setWorkspaceDetails(showingWorkspace);
-	}, [workspaceId, workspaces]);
-
-	useEffect(() => {
 		if (!workspaceId) return;
 		(async () => {
 			const { data: collaborators } = await getCollaborators(workspaceId);
@@ -101,18 +94,16 @@ const useInit = () => {
 				setCollaborators(collaborators);
 			}
 		})();
-	}, [workspaceId, action.updatePermission]);
+	}, [workspaceId]);
 
 	return {
 		store: {
 			isSubscriptionModalOpen,
 			isOpenAlertMessage,
-			workspaceDetails,
-			uploadingLogo,
-			user,
-			subscription,
+			currentWorkspace,
+			isUploadingLogo,
 			collaborators,
-			permission: currentWorkspace?.permission,
+			subscription,
 		},
 		action: {
 			onAlertConfirm,

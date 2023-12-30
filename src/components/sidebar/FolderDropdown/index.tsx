@@ -23,17 +23,13 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 		action: { checkIsSubscriptionValid },
 	} = useUser();
 	const {
-		store: { workspaces, folderId },
+		store: { currentWorkspace, folderId },
 		action,
 	} = useAppStore();
 	const { toast } = useToast();
-	const workspace = useMemo(
-		() => workspaces.find((workspace) => workspace.id === workspaceId),
-		[workspaces, workspaceId],
-	);
 	const folders = useMemo(
-		() => workspace?.folders?.filter((folder) => !folder.inTrash) || [],
-		[workspace],
+		() => currentWorkspace?.folders?.filter((folder) => !folder.inTrash) || [],
+		[currentWorkspace],
 	);
 
 	const addFolder = async () => {
@@ -71,30 +67,28 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 	};
 
 	useEffect(() => {
-		if (workspaceFolders.length) {
-			const workspace = workspaces.find(
-				(workspace) => workspace.id === workspaceId,
-			);
+		if (currentWorkspace && workspaceFolders.length) {
 			action.setFolders({
 				folders: workspaceFolders.map((folder) => ({
 					...folder,
 					files:
-						workspace?.folders?.find((f) => f.id === folder.id)?.files || [],
+						currentWorkspace?.folders?.find((f) => f.id === folder.id)?.files ||
+						[],
 				})),
 			});
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [workspaceId, workspaceFolders]);
+	}, [workspaceFolders]);
 
 	useEffect(() => {
-		if (!workspaceId || !folderId) return;
+		if (!folderId) return;
 		(async () => {
 			const { data: files, error: filesError } = await getFiles(folderId);
 			if (filesError) return;
 			action.setFiles({ files });
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [workspaceId, folderId]);
+	}, [folderId]);
 
 	return (
 		<>
@@ -108,7 +102,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 					/>
 				</Tooltip>
 			</div>
-			{user && workspace && (
+			{user && currentWorkspace && (
 				<Accordion
 					type='multiple'
 					defaultValue={[folderId || '']}
@@ -120,7 +114,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 							type='folder'
 							user={user}
 							mainId={folder.id}
-							ids={[workspace.id, folder.id]}
+							ids={[currentWorkspace.id, folder.id]}
 							title={folder.title}
 							iconId={folder.iconId}
 							files={folder.files?.filter((file) => !file.inTrash)}

@@ -1,18 +1,10 @@
 'use client';
-import {
-	Briefcase,
-	CreditCard,
-	ExternalLink,
-	LogOut,
-	User as UserIcon,
-	HammerIcon as ProfileIcon,
-} from 'lucide-react';
+import { Briefcase, CreditCard, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import LogoutButton from '@/components/global/LogoutButton';
 import Collaborators from '@/components/global/Collaborators';
 import PermissionsSelect from '@/components/global/PermissionsSelect';
 // import { postData } from '@/lib/utils';
@@ -22,13 +14,10 @@ import useInit from './use-init';
 const SettingsForm = () => {
 	const {
 		store: {
-			// user,
-			permission,
 			subscription,
-			// isSubscriptionModalOpen,
 			isOpenAlertMessage,
-			workspaceDetails,
-			uploadingLogo,
+			currentWorkspace,
+			isUploadingLogo,
 		},
 		action: {
 			onAlertConfirm,
@@ -56,7 +45,7 @@ const SettingsForm = () => {
 				</Label>
 				<Input
 					name='workspaceName'
-					value={workspaceDetails ? workspaceDetails.title : ''}
+					defaultValue={currentWorkspace ? currentWorkspace.title : ''}
 					placeholder='Workspace Name'
 					onChange={(e) =>
 						e.currentTarget.value &&
@@ -78,7 +67,7 @@ const SettingsForm = () => {
 						e.currentTarget.files?.[0] &&
 						onChangeWorkspaceLogo(e.currentTarget.files[0])
 					}
-					disabled={uploadingLogo || subscription?.status !== 'active'}
+					disabled={isUploadingLogo || subscription?.status !== 'active'}
 				/>
 				{subscription?.status !== 'active' && (
 					<small className='text-muted-foreground'>
@@ -88,7 +77,7 @@ const SettingsForm = () => {
 			</div>
 			<>
 				<PermissionsSelect />
-				{permission === 'shared' && <Collaborators />}
+				{currentWorkspace?.permission === 'shared' && <Collaborators />}
 				<Alert variant='destructive'>
 					<AlertDescription>
 						Warning! deleting you workspace will permanantly delete all data
@@ -104,12 +93,12 @@ const SettingsForm = () => {
 						Delete Workspace
 					</Button>
 				</Alert>
-				<p className='flex items-center gap-2 mt-6'>
+				{/* <p className='flex items-center gap-2 mt-6'>
 					<UserIcon size={20} /> Profile
 				</p>
 				<hr />
 				<div className='flex items-center'>
-					{/* <Avatar>
+					<Avatar>
 						<AvatarImage src='' />
 						<AvatarFallback>
 							<ProfileIcon />
@@ -133,11 +122,11 @@ const SettingsForm = () => {
 							// onChange={onChangeUserProfileAvatar}
 							disabled
 						/>
-					</div> */}
+					</div>
 				</div>
 				<LogoutButton className='flex items-center'>
 					<LogOut />
-				</LogoutButton>
+				</LogoutButton> */}
 				<p className='flex items-center gap-2 mt-6'>
 					<CreditCard size={20} /> Billing & Plan
 				</p>
