@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { Header } from '@/components/landing-page';
+import { Header } from '@/components/LandingPage';
 
 const HomePageLayout = ({ children }: PropsWithChildren) => {
 	return (

@@ -1,6 +1,5 @@
-import React from 'react';
 import Image from 'next/image';
-
+import React from 'react';
 import { cn } from '@/lib/utils';
 import {
 	CLIENTS,
@@ -8,7 +7,7 @@ import {
 	PRICING_CARDS,
 	PRICING_PLANS,
 } from '@/constants/common';
-import { TitleSection, CustomCard } from '@/components/landing-page';
+import { TitleSection, CustomCard } from '@/components/LandingPage';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { CardTitle, CardDescription, CardContent } from '@/components/ui/card';
