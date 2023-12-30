@@ -6,7 +6,7 @@ import { MAX_FOLDERS_FREE_PLAN } from '@/constants/common';
 import { getFiles } from '@/lib/supabase/schemas/files/queries';
 import { useAppStore } from '@/components/Providers/AppProvider';
 import { useUser } from '@/components/Providers/UserProvider';
-import Tooltip from '@/components/global/Tooltip';
+import Tooltip from '@/components/Global/Tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { Accordion } from '@/components/ui/accordion';
 import Dropdown from './Dropdown';

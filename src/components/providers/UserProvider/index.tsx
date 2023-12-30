@@ -10,7 +10,7 @@ import {
 	type PropsWithChildren,
 } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import SubscriptionDialog from '@/components/global/SubscriptionDialog';
+import SubscriptionDialog from '@/components/Global/SubscriptionDialog';
 import { createClientComponentClient } from '@/lib/supabase/utils/client';
 import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/queries';
 

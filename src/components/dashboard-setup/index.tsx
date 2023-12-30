@@ -1,18 +1,18 @@
 'use client';
 import type { AuthUser } from '@supabase/supabase-js';
 import type { SubscriptionType } from '@/lib/supabase/types';
-import EmojiPicker from '../global/EmojiPicker';
-import Loader from '../global/Loader';
+import EmojiPicker from '@/components/Global/EmojiPicker';
+import Loader from '@/components/Global/Loader';
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from '../ui/card';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+} from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import useInit from './use-init';
 
 type Props = {

@@ -17,7 +17,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import Loader from '@/components/global/Loader';
+import Loader from '@/components/Global/Loader';
 import { signUpFormSchema, type SignUpFormSchemaType } from './form-schema';
 import { actionSignUpUser } from './actions';
 

@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { PlusIcon, Trash } from 'lucide-react';
 import { useMemo, useState, type FocusEvent } from 'react';
 import { cn } from '@/lib/utils';
-import EmojiPicker from '@/components/global/EmojiPicker';
-import Tooltip from '@/components/global/Tooltip';
+import EmojiPicker from '@/components/Global/EmojiPicker';
+import Tooltip from '@/components/Global/Tooltip';
 import {
 	AccordionContent,
 	AccordionItem,

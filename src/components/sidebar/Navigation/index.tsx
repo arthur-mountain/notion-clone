@@ -2,7 +2,7 @@ import { HomeIcon, SettingsIcon, TrashIcon } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 import { cn } from '@/lib/utils';
-import CustomDialog from '@/components/global/CustomDialog';
+import CustomDialog from '@/components/Global/CustomDialog';
 import SettingsForm from './SettingsForm';
 import TrashRestore from './TrashRestore';
 

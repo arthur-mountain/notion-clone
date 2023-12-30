@@ -1,7 +1,7 @@
 'use client';
 import type { WorkspaceType } from '@/lib/supabase/types';
 import React, { useCallback, useEffect, useState } from 'react';
-import CustomDialog from '@/components/global/CustomDialog';
+import CustomDialog from '@/components/Global/CustomDialog';
 import { useAppStore } from '../../Providers/AppProvider';
 import WorkspaceCreator from '../WorkspaceCreator';
 import SelectedWorkspace from './SelectedWorkspace';

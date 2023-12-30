@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import Loader from '@/components/global/Loader';
+import Loader from '@/components/Global/Loader';
 import { formSchema, type FormSchemaType } from './form-schema';
 import { actionLoginUser } from './actions';
 

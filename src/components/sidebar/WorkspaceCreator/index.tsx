@@ -9,10 +9,10 @@ import { useToast } from '@/components/ui/use-toast';
 import { createWorkspace } from '@/lib/supabase/schemas/workspaces/queries';
 import { addCollaborators } from '@/lib/supabase/schemas/collaborators/queries';
 import { useUser } from '@/components/Providers/UserProvider';
-import PermissionsSelect from '@/components/global/PermissionsSelect';
-import CollaboratorSearch from '@/components/global/Collaborators/Search';
-import CollaboratorList from '@/components/global/Collaborators/List';
-import useCollaborators from '@/components/global/Collaborators/use-collaborators';
+import PermissionsSelect from '@/components/Global/PermissionsSelect';
+import CollaboratorSearch from '@/components/Global/Collaborators/Search';
+import CollaboratorList from '@/components/Global/Collaborators/List';
+import useCollaborators from '@/components/Global/Collaborators/use-collaborators';
 
 const WorkspaceCreator = ({ onClose }: { onClose: () => void }) => {
 	const {
