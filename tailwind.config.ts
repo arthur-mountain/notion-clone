@@ -108,6 +108,7 @@ const config: Config = {
 				'brand-primaryBlue': '#0469ff',
 				'brand-primaryPurple': '#7000ff',
 				'brand-dark': '#030014',
+				'peach-500': '#EB5757',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
