@@ -254,11 +254,12 @@ const useInit = () => {
 		updateFile: (
 			payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
 		) => {
+			if (!store.fileId) return { error: 'fileId not founded' };
 			dispatch({ type: 'UPDATE_FILE', payload });
 			return updateFile(payload.file, store.fileId);
 		},
 		deleteFile: () => {
-			if (!store.fileId) return;
+			if (!store.fileId) return { error: 'fileId not founded' };
 			dispatch({ type: 'DELETE_FILE' });
 			return deleteFile(store.fileId);
 		},
@@ -278,11 +279,12 @@ const useInit = () => {
 		updateFolder: (
 			payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
 		) => {
+			if (!store.folderId) return { error: 'FolderId not founded' };
 			dispatch({ type: 'UPDATE_FOLDER', payload });
 			return updateFolder(payload.folder, store.folderId);
 		},
 		deleteFolder: () => {
-			if (!store.folderId) return;
+			if (!store.folderId) return { error: 'FolderId not founded' };
 			dispatch({ type: 'DELETE_FOLDER' });
 			return deleteFolder(store.folderId);
 		},
@@ -302,12 +304,12 @@ const useInit = () => {
 		updateWorkspace: (
 			payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
 		) => {
-			if (!store.workspaceId) return;
+			if (!store.workspaceId) return { error: 'workspaceId not founded' };
 			dispatch({ type: 'UPDATE_WORKSPACE', payload });
 			return updateWorkspace(payload.workspace, store.workspaceId);
 		},
 		deleteWorkspace: () => {
-			if (!store.workspaceId) return;
+			if (!store.workspaceId) return { error: 'workspaceId not founded' };
 			dispatch({ type: 'DELETE_WORKSPACE' });
 			return deleteWorkspace(store.workspaceId);
 		},

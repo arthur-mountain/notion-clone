@@ -7,20 +7,15 @@ type UseInitType = { ids: string[]; type: 'folder' | 'file'; user: AuthUser };
 const useInit = ({ ids, type, user }: UseInitType) => {
 	const { toast } = useToast();
 	const { action } = useAppStore();
-	const [workspaceId, folderId, fileId] = ids;
 
 	const onUpdateTitle = async (title: string) => {
 		let error;
 		switch (type) {
 			case 'folder':
-				error = folderId
-					? (await action.updateFolder({ folder: { title } })).error
-					: 'FolderId not founded';
+				error = (await action.updateFolder({ folder: { title } })).error;
 				break;
 			case 'file':
-				error = fileId
-					? (await action.updateFile({ file: { title } })).error
-					: 'FileId not founded';
+				error = (await action.updateFile({ file: { title } })).error;
 				break;
 			default:
 				error = 'Type not founded';
@@ -31,7 +26,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 			toast({
 				title: 'Error',
 				variant: 'destructive',
-				description: `Could not update the title for this ${type}`,
+				description: `Could not update the title for this ${type}, cause: ${error}`,
 			});
 		} else {
 			toast({ title: 'Success', description: `${type} title changed.` });
@@ -39,37 +34,26 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 	};
 
 	const onUpdateEmoji = async (updatedEmoji: string) => {
-		if (!workspaceId) return;
-
 		const data = { iconId: updatedEmoji };
-		let funcOrError;
+		let error;
 		switch (type) {
 			case 'folder': {
-				funcOrError = folderId
-					? () => {
-							return action.updateFolder({ folder: data });
-					  }
-					: 'FolderId not founded';
+				error = (await action.updateFolder({ folder: data })).error;
 				break;
 			}
 			case 'file':
-				funcOrError =
-					folderId && fileId
-						? () => {
-								return action.updateFile({ file: data });
-						  }
-						: 'One of folderId and fileId not founded';
+				error = (await action.updateFile({ file: data })).error;
 				break;
 			default:
-				funcOrError = 'Type not founded';
+				error = 'Type not founded';
 				break;
 		}
 
-		if (typeof funcOrError === 'string' || (await funcOrError()).error) {
+		if (error) {
 			toast({
 				title: 'Error',
 				variant: 'destructive',
-				description: `Could not update the emoji for this ${type}`,
+				description: `Could not update the emoji for this ${type}, cause: ${error}`,
 			});
 		} else {
 			toast({ title: 'Success', description: `Update emoji for the ${type}` });
@@ -77,36 +61,28 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 	};
 
 	const onMoveToTrash = async () => {
-		if (!user?.email || !workspaceId) return;
+		if (!user?.email) return;
 		const data = { inTrash: `Deleted by ${user?.email}` };
-		let funcOrError;
+		let error;
 		switch (type) {
 			case 'folder': {
-				funcOrError = folderId
-					? () => {
-							return action.updateFolder({ folder: data });
-					  }
-					: 'FolderId not founded';
+				error = (await action.updateFolder({ folder: data })).error;
 				break;
 			}
 			case 'file': {
-				funcOrError = folderId
-					? () => {
-							return action.updateFile({ file: data });
-					  }
-					: 'One of folderId and fileId not founded';
+				error = (await action.updateFile({ file: data })).error;
 				break;
 			}
 			default:
-				funcOrError = 'Type not founded';
+				error = 'Type not founded';
 				break;
 		}
 
-		if (typeof funcOrError === 'string' || (await funcOrError()).error) {
+		if (error) {
 			toast({
 				title: 'Error',
 				variant: 'destructive',
-				description: `Could not move the ${type} to trash`,
+				description: `Could not move the ${type} to trash, cause: ${error}`,
 			});
 		} else {
 			toast({ title: 'Success', description: `Moved ${type} to trash` });
@@ -114,6 +90,7 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 	};
 
 	const createNewFile = async () => {
+		const [workspaceId, folderId] = ids;
 		if (!workspaceId || !folderId) return;
 
 		const newFile: FileType = {

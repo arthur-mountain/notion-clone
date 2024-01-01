@@ -51,6 +51,6 @@ export const updateFile = async (file: Partial<FileType>, fileId: string) => {
 };
 
 export const deleteFile = async (fileId: string) => {
-	if (!fileId) return;
+	if (!fileId) return
 	await db.delete(filesSchema).where(eq(filesSchema.id, fileId));
 };
