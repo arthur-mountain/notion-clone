@@ -5,7 +5,7 @@ type UploadParams = {
 	storageName: string;
 	fileName: string;
 	// FIXME: Those two types should match supabase upload types
-	file: Blob;
+	file: Blob | string;
 	storageConfig?: any;
 };
 

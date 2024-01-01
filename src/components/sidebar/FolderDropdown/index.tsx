@@ -27,10 +27,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 	} = useAppStore();
 	const { toast } = useToast();
 	const folders = useMemo(
-		() =>
-			workspaces
-				.find((w) => w.id === workspaceId)
-				?.folders?.filter((folder) => !folder.inTrash) || [],
+		() => workspaces.find((w) => w.id === workspaceId)?.folders || [],
 		[workspaces, workspaceId],
 	);
 
@@ -119,7 +116,7 @@ const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
 							ids={[workspaceId, folder.id]}
 							title={folder.title}
 							iconId={folder.iconId}
-							files={folder.files?.filter((file) => !file.inTrash)}
+							files={folder.files}
 						/>
 					))}
 				</Accordion>

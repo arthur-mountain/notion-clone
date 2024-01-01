@@ -52,9 +52,7 @@ const Editor = ({ setQuillIns }: Props) => {
 		[setQuillIns],
 	);
 
-	return (
-		<div id='container' className='max-w-[800px] mx-auto' ref={wrapperRef} />
-	);
+	return <div id='container' ref={wrapperRef} />;
 };
 
 export default Editor;
