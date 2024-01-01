@@ -4,6 +4,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/Providers/NextThemeProvider';
 import { AppStoreProvider } from '@/components/Providers/AppProvider';
 import { UserProvider } from '@/components/Providers/UserProvider';
+import { SocketProvider } from '@/components/Providers/SocketProvider';
 import { cn } from '@/lib/utils';
 import '@/lib/supabase/db';
 import './globals.css';
@@ -34,8 +35,10 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 				<ThemeProvider attribute='class' defaultTheme='dark' enableSystem>
 					<AppStoreProvider>
 						<UserProvider>
-							{children}
-							<Toaster />
+							<SocketProvider>
+								{children}
+								<Toaster />
+							</SocketProvider>
 						</UserProvider>
 					</AppStoreProvider>
 				</ThemeProvider>
