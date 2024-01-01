@@ -1,5 +1,5 @@
 import React, { type PropsWithChildren } from 'react';
-import Sidebar from '@/components/sidebar';
+import Sidebar from '@/components/Sidebar';
 
 type Props = PropsWithChildren<{ params: { workspaceId: string } }>;
 
