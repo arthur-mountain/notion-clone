@@ -1,6 +1,7 @@
 'use client';
 import type { Quill } from 'quill';
 import { useState } from 'react';
+import useRealtimeSocket from './use-realtime-socket';
 import useInit, { type Props } from './use-init';
 import EmojiPicker from '@/components/Global/EmojiPicker';
 import InTrashMessage from './InTrashMessage';
@@ -10,21 +11,23 @@ import BannerUpload from './BannerUpload';
 import Editor from './Editor';
 
 const RichEditor = ({ id, type, data }: Props) => {
-	const {
-		store: { storeData, breadCrumbs },
-		action,
-	} = useInit({ id, type, data });
 	const [quillIns, setQuillIns] = useState<Quill>();
 	const [collaborators, setCollaborators] = useState<
 		{ id: string; email: string; avatarUrl: string }[]
 	>([{ id: '1', email: 'daily@gmail.com', avatarUrl: 'test' }]);
-	const [isSaving, setIsSaving] = useState(true);
+	const {
+		store: { storeData, breadCrumbs },
+		action,
+	} = useInit({ id, type, data });
+	const {
+		store: { isConnected, isSaving },
+	} = useRealtimeSocket({ id, type, quillIns });
+
 	if (!storeData) return null;
-	// console.log(`🚀 ~ RichEditor ~ quillIns:`, quillIns);
-	// console.log(`🚀 ~ RichEditor ~ storeData:`, storeData);
 
 	return (
 		<>
+			{isConnected ? 'connected' : 'not connected'}
 			{storeData.inTrash && (
 				<InTrashMessage
 					type={type}
@@ -67,7 +70,7 @@ const RichEditor = ({ id, type, data }: Props) => {
 					{type.toUpperCase()}
 				</div>
 
-				<Editor setQuillIns={setQuillIns} />
+				<Editor key='rich-editor' setQuillIns={setQuillIns} />
 			</div>
 		</>
 	);

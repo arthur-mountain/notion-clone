@@ -1,8 +1,8 @@
 import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
-import { useAppStore } from '../Providers/AppProvider';
-import { useMemo } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useMemo } from 'react';
 import { createClientComponentClient } from '@/lib/supabase/utils/client';
+import { useAppStore } from '@/components/Providers/AppProvider';
 
 export type Props = {
 	id: string;
@@ -16,7 +16,7 @@ const useInit = ({ id, type, data }: Props) => {
 		action,
 	} = useAppStore();
 	const router = useRouter();
-	const pathname = usePathname();
+	// const pathname = usePathname();
 	const currentWorkspace = useMemo(
 		() => workspaces.find((workspace) => workspace.id === workspaceId),
 		[workspaces, workspaceId],
