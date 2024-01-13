@@ -1,8 +1,8 @@
 import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
-import { createClientComponentClient } from '@/lib/supabase/utils/client';
 import { useAppStore } from '@/components/Providers/AppProvider';
+import { removeStorageUrls } from '@/lib/supabase/utils/client/get-storage-url';
 
 export type Props = {
 	id: string;
@@ -118,9 +118,8 @@ const useInit = ({ id, type, data }: Props) => {
 
 	const removeBanner = async () => {
 		try {
-			await createClientComponentClient()
-				.storage.from('file-banners')
-				.remove([`banner-${id}`]);
+			removeStorageUrls('file-banners', [`banner-${id}`]);
+
 			switch (type) {
 				case 'workspace': {
 					await action.updateWorkspace({ workspace: { bannerUrl: '' } });

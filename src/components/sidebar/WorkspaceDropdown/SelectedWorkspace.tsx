@@ -2,7 +2,7 @@ import type { WorkspaceType } from '@/lib/supabase/types';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState, type MouseEvent } from 'react';
-import { createClientComponentClient } from '@/lib/supabase/utils/client';
+import { getStoragePublicUrl } from '@/lib/supabase/utils/client/get-storage-url';
 
 type Props = {
 	workspace: WorkspaceType;
@@ -14,11 +14,7 @@ const SelectedWorkspace = ({ workspace, onClick }: Props) => {
 
 	useEffect(() => {
 		if (workspace.logo) {
-			setWorkspaceLogo(
-				createClientComponentClient()
-					.storage.from('workspace-logos')
-					.getPublicUrl(workspace.logo)?.data.publicUrl,
-			);
+			setWorkspaceLogo(getStoragePublicUrl('workspace-logos', workspace.logo));
 		}
 	}, [workspace]);
 

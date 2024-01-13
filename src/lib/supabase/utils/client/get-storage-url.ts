@@ -10,3 +10,8 @@ export const getStoragePublicUrl = (
 		.getPublicUrl(publicUrl).data.publicUrl;
 	return url || '';
 };
+
+export const removeStorageUrls = (bucketName: string, urls: string[]) => {
+	if (!urls.length) return;
+	createClientComponentClient().storage.from(bucketName).remove(urls);
+};
