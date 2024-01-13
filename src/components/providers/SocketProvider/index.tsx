@@ -30,9 +30,6 @@ export const SocketProvider = ({ children }: Props) => {
 			{ path: process.env.NEXT_PUBLIC_SOCKET_API_URL, addTrailingSlash: false },
 		);
 
-		console.log(process.env.NEXT_PUBLIC_SOCKET_API_URL);
-		
-
 		socketInstance.on('connect', () => {
 			setIsConnected(true);
 		});

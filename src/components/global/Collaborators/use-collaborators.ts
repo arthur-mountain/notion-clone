@@ -54,6 +54,7 @@ const useCollaborators = ({
 		if (!workspaceId) return;
 		(async () => {
 			const { data: collaborators } = await getCollaborators(workspaceId);
+			
 			if (collaborators.length) {
 				if (hasExistedWorkspace) {
 					updateWorkspace({ workspace: { permission: 'shared' } });

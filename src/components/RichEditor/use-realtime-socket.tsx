@@ -102,7 +102,7 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 			setIsSaving(true);
 			saveTimerRef.current = window.setTimeout(async () => {
 				console.log('changes saved', delta, _oldDelta, source);
-				
+
 				const contents = quillIns.getContents();
 				const quillLength = quillIns.getLength();
 				if (!contents || quillLength === 1 || !id) return;
@@ -144,6 +144,20 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 			if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
 		};
 	}, [id, type, quillIns, socket, user]);
+
+	useEffect(() => {
+		if (!quillIns || !socket || !id) return;
+		const onReceiveChanges = (deltas: any, receiveId: string) => {
+		console.log(`🚀 ~ onReceiveChanges ~ receiveId:`, receiveId);
+			console.log(`🚀 ~ onReceiveChanges ~ deltas:`, deltas);
+			if (receiveId !== id) return;
+			quillIns.updateContents(deltas);
+		};
+		socket.on('receive-changes', onReceiveChanges);
+		return () => {
+			socket.off('receive-changes', onReceiveChanges);
+		};
+	}, [quillIns, socket, id]);
 
 	return { store: { isConnected, isSaving } };
 };
