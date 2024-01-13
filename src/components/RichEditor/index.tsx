@@ -12,15 +12,12 @@ import Editor from './Editor';
 
 const RichEditor = ({ id, type, data }: Props) => {
 	const [quillIns, setQuillIns] = useState<Quill>();
-	const [collaborators, setCollaborators] = useState<
-		{ id: string; email: string; avatarUrl: string }[]
-	>([{ id: '1', email: 'daily@gmail.com', avatarUrl: 'test' }]);
 	const {
 		store: { storeData, breadCrumbs },
 		action,
 	} = useInit({ id, type, data });
 	const {
-		store: { isConnected, isSaving },
+		store: { isConnected, isSaving, collaborators },
 	} = useRealtimeSocket({ id, type, quillIns });
 
 	if (!storeData) return null;

@@ -1,13 +1,14 @@
-import type { Quill, TextChangeHandler } from 'quill';
+import type { Quill, TextChangeHandler, SelectionChangeHandler } from 'quill';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-// import { createClientComponentClient } from '@/lib/supabase/utils/client';
+import { createClientComponentClient } from '@/lib/supabase/utils/client';
 import { useAppStore } from '@/components/Providers/AppProvider';
 import { useUser } from '@/components/Providers/UserProvider';
 import { useSocket } from '../Providers/SocketProvider';
 import { getFileById } from '@/lib/supabase/schemas/files/queries';
 import { getFolderById } from '@/lib/supabase/schemas/folders/queries';
 import { getWorkspaceById } from '@/lib/supabase/schemas/workspaces/queries';
+import { getStoragePublicUrl } from '@/lib/supabase/utils/client/get-storage-url';
 
 export type Props = {
 	id: string;
@@ -19,7 +20,7 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 	const { socket, isConnected } = useSocket();
 	const router = useRouter();
 	const {
-		store: { workspaces, workspaceId, folderId, fileId },
+		store: { workspaceId },
 		action,
 	} = useAppStore();
 	const {
@@ -27,13 +28,10 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 	} = useUser();
 	const saveTimerRef = useRef<number>();
 	const [isSaving, setIsSaving] = useState(false);
-
-	// const router = useRouter();
-	// const pathname = usePathname();
-	// const currentWorkspace = useMemo(
-	// 	() => workspaces.find((workspace) => workspace.id === workspaceId),
-	// 	[workspaces, workspaceId],
-	// );
+	const [collaborators, setCollaborators] = useState<
+		{ id: string; email: string; avatarUrl: string }[]
+	>([]);
+	const [cursors, setCursors] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (!id) return;
@@ -77,32 +75,26 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 				}
 			}
 		})();
+
+		// Ignore action object that references will change may cause infinite loop
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, type, quillIns, workspaceId, router]);
 
-	// Rooms
+	/* Start: Create room */
 	useEffect(() => {
 		if (!socket || !quillIns || !id) return;
 		socket.emit('create-room', id);
 	}, [socket, quillIns, id]);
+	/* End: Create room */
 
-	// Send quill changes to all clients
+	/* Start: Send quill text change event to all clients */
 	useEffect(() => {
 		if (!quillIns || !socket || !id || !user) return;
-
-		// const selectionChangeHandler = (cursorId: string) => {
-		// 	return (range: any, _oldRange: any, source: any) => {
-		// 		if (source === 'user' && cursorId) {
-		// 			socket.emit('send-cursor-move', range, fileId, cursorId);
-		// 		}
-		// 	};
-		// };
 		const onTextChange: TextChangeHandler = (delta, _oldDelta, source) => {
 			if (source !== 'user') return;
 			if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
 			setIsSaving(true);
 			saveTimerRef.current = window.setTimeout(async () => {
-				console.log('changes saved', delta, _oldDelta, source);
-
 				const contents = quillIns.getContents();
 				const quillLength = quillIns.getLength();
 				if (!contents || quillLength === 1 || !id) return;
@@ -136,30 +128,117 @@ const useRealtimeSocket = ({ id, type, quillIns }: Props) => {
 			socket.emit('send-changes', delta, id);
 		};
 		quillIns.on('text-change', onTextChange);
-		// quillIns.on('selection-change', selectionChangeHandler(user.id));
 
 		return () => {
 			quillIns.off('text-change', onTextChange);
-			// quillIns.off('selection-change', selectionChangeHandler(user.id));
 			if (saveTimerRef.current) window.clearTimeout(saveTimerRef.current);
 		};
+
+		// Ignore action object that references will change may cause infinite loop
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [id, type, quillIns, socket, user]);
 
 	useEffect(() => {
 		if (!quillIns || !socket || !id) return;
-		const onReceiveChanges = (deltas: any, receiveId: string) => {
-		console.log(`🚀 ~ onReceiveChanges ~ receiveId:`, receiveId);
-			console.log(`🚀 ~ onReceiveChanges ~ deltas:`, deltas);
+		const onReceiveTextChange = (
+			deltas: Parameters<TextChangeHandler>[0],
+			receiveId: string,
+		) => {
 			if (receiveId !== id) return;
 			quillIns.updateContents(deltas);
 		};
-		socket.on('receive-changes', onReceiveChanges);
+		socket.on('receive-changes', onReceiveTextChange);
 		return () => {
-			socket.off('receive-changes', onReceiveChanges);
+			socket.off('receive-changes', onReceiveTextChange);
 		};
 	}, [quillIns, socket, id]);
+	/* End: Send quill text change event to all clients */
 
-	return { store: { isConnected, isSaving } };
+	/* Start: Send quill selection/cursor change to all clients */
+	useEffect(() => {
+		if (!quillIns || !socket || !id || !user) return;
+
+		const onSelectionChange: SelectionChangeHandler = (
+			range,
+			_oldRange,
+			source,
+		) => {
+			if (source === 'user') {
+				socket.emit('send-cursor-move', range, id, user.id);
+			}
+		};
+
+		quillIns.on('selection-change', onSelectionChange);
+		return () => {
+			quillIns.off('selection-change', onSelectionChange);
+		};
+	}, [id, quillIns, socket, user]);
+
+	useEffect(() => {
+		if (!quillIns || !socket || !id || !cursors.length) return;
+		const onReceiveCursorChange = (
+			range: Parameters<SelectionChangeHandler>[0],
+			roomId: string,
+			cursorId: string,
+		) => {
+			if (roomId !== id) return;
+			const currentCursor = cursors.find(
+				(c) => c.cursors()?.[0]?.id === cursorId,
+			);
+			if (currentCursor) currentCursor.moveCursor(cursorId, range);
+		};
+		socket.on('receive-cursor-move', onReceiveCursorChange);
+		return () => {
+			socket.off('receive-cursor-move', onReceiveCursorChange);
+		};
+	}, [quillIns, socket, id, cursors]);
+	/* End: Send quill selection/cursor change to all clients */
+
+	useEffect(() => {
+		if (!id || !quillIns || !user) return;
+		const supabase = createClientComponentClient();
+		const channel = supabase.channel(id);
+
+		channel
+			.on('presence', { event: 'sync' }, () => {
+				const newState = channel.presenceState<{
+					id: string;
+					email: string;
+					avatarUrl: string;
+				}>();
+				const newCollaborators = Object.values(newState).flat();
+				setCollaborators(newCollaborators);
+
+				setCursors(
+					newCollaborators
+						.filter((collaborator) => collaborator.id !== user.id)
+						.map((collaborator) => {
+							const userCursor = quillIns?.getModule('cursors');
+							userCursor?.createCursor(
+								collaborator.id,
+								collaborator.email.split('@')[0],
+								`#${Math.random().toString(16).slice(2, 8)}`,
+							);
+							return userCursor;
+						}),
+				);
+			})
+			.subscribe(() => {
+				channel.track({
+					id: user.id,
+					email: user.email?.split('@')[0],
+					avatarUrl: getStoragePublicUrl('avatars', user.extra.avatarUrl),
+				});
+			});
+
+		return () => {
+			supabase.removeChannel(channel);
+		};
+	}, [id, quillIns, user]);
+
+	return {
+		store: { isConnected, isSaving, collaborators },
+	};
 };
 
 export default useRealtimeSocket;

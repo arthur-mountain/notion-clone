@@ -1,6 +1,6 @@
 'use client';
 import type { AuthUser } from '@supabase/supabase-js';
-import type { SubscriptionType } from '@/lib/supabase/types';
+import type { SubscriptionType, UserType } from '@/lib/supabase/types';
 import {
 	createContext,
 	useContext,
@@ -13,9 +13,14 @@ import { useToast } from '@/components/ui/use-toast';
 import SubscriptionDialog from '@/components/Global/SubscriptionDialog';
 import { createClientComponentClient } from '@/lib/supabase/utils/client';
 import { getFirstSubscriptionByUserId } from '@/lib/supabase/schemas/subscriptions/queries';
+import { getUserById } from '@/lib/supabase/schemas/users/queries';
+
+type User = AuthUser & {
+	extra: UserType;
+};
 
 type Store = {
-	user: AuthUser | null;
+	user: User | null;
 	subscription: SubscriptionType | null;
 	isSubscriptionModalOpen: boolean;
 };
@@ -36,7 +41,7 @@ export const useUser = () => {
 };
 export const UserProvider = ({ children }: PropsWithChildren) => {
 	const { toast } = useToast();
-	const [user, setUser] = useState<AuthUser | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [subscription, setSubscription] = useState<SubscriptionType | null>(
 		null,
 	);
@@ -59,9 +64,15 @@ export const UserProvider = ({ children }: PropsWithChildren) => {
 			const {
 				data: { user },
 			} = await createClientComponentClient().auth.getUser();
-			if (!user) return;
-			console.log(user);
-			setUser(user);
+			if (!user) return toast({ title: 'User Not Found' });
+			const extraUserInfo = await getUserById(user.id);
+			if (!extraUserInfo.data || extraUserInfo.error) {
+				return toast({
+					title: 'Get User Info Error',
+					description: extraUserInfo.error,
+				});
+			}
+			setUser({ ...user, extra: extraUserInfo.data });
 		})();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
