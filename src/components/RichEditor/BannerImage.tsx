@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { getStoragePublicUrl } from '@/lib/supabase/utils/client/get-storage-url';
+import { getStoragePublicUrl } from '@/lib/supabase/utils/client/storage-urls';
 
 type Props = {
 	bannerUrl: string;

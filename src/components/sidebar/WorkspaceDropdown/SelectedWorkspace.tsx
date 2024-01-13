@@ -2,7 +2,7 @@ import type { WorkspaceType } from '@/lib/supabase/types';
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useEffect, useState, type MouseEvent } from 'react';
-import { getStoragePublicUrl } from '@/lib/supabase/utils/client/get-storage-url';
+import { getStoragePublicUrl } from '@/lib/supabase/utils/client/storage-urls';
 
 type Props = {
 	workspace: WorkspaceType;

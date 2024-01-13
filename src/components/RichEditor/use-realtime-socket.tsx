@@ -8,7 +8,7 @@ import { useSocket } from '../Providers/SocketProvider';
 import { getFileById } from '@/lib/supabase/schemas/files/queries';
 import { getFolderById } from '@/lib/supabase/schemas/folders/queries';
 import { getWorkspaceById } from '@/lib/supabase/schemas/workspaces/queries';
-import { getStoragePublicUrl } from '@/lib/supabase/utils/client/get-storage-url';
+import { getStoragePublicUrl } from '@/lib/supabase/utils/client/storage-urls';
 
 export type Props = {
 	id: string;

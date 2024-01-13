@@ -2,7 +2,7 @@ import type { FileType, FolderType, WorkspaceType } from '@/lib/supabase/types';
 import { useRouter } from 'next/navigation';
 import { useMemo } from 'react';
 import { useAppStore } from '@/components/Providers/AppProvider';
-import { removeStorageUrls } from '@/lib/supabase/utils/client/get-storage-url';
+import { removeStorageUrls } from '@/lib/supabase/utils/client/storage-urls';
 
 export type Props = {
 	id: string;
