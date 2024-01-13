@@ -29,11 +29,14 @@ type Store = {
 	fileId: string;
 };
 
+type ActionPayload<Payload = {}> = Payload &
+	Partial<{
+		workspaceId: string;
+		folderId: string;
+		fileId: string;
+	}>;
 type Action =
-	| {
-			type: 'INIT';
-			payload: { workspaceId?: string; folderId?: string; fileId?: string };
-	  }
+	| { type: 'INIT'; payload?: ActionPayload }
 	| { type: 'SET_WORKSPACES'; payload: { workspaces: AppStoreWorkspaceType[] } }
 	| { type: 'ADD_WORKSPACE'; payload: { workspace: AppStoreWorkspaceType } }
 	| {
@@ -44,11 +47,11 @@ type Action =
 	| { type: 'SET_FOLDERS'; payload: { folders: AppStoreFolderType[] } }
 	| { type: 'ADD_FOLDER'; payload: { folder: AppStoreFolderType } }
 	| { type: 'UPDATE_FOLDER'; payload: { folder: Partial<AppStoreFolderType> } }
-	| { type: 'DELETE_FOLDER' }
+	| { type: 'DELETE_FOLDER'; payload?: ActionPayload }
 	| { type: 'SET_FILES'; payload: { files: FileType[] } }
 	| { type: 'ADD_FILE'; payload: { file: FileType } }
 	| { type: 'UPDATE_FILE'; payload: { file: Partial<FileType> } }
-	| { type: 'DELETE_FILE' };
+	| { type: 'DELETE_FILE'; payload?: ActionPayload };
 
 const initialStore: Store = {
 	workspaces: [],
@@ -64,9 +67,9 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 		case 'INIT':
 			return {
 				...store,
-				workspaceId: action.payload.workspaceId || '',
-				folderId: action.payload.folderId || '',
-				fileId: action.payload.fileId || '',
+				workspaceId: action.payload?.workspaceId || '',
+				folderId: action.payload?.folderId || '',
+				fileId: action.payload?.fileId || '',
 			};
 		case 'SET_WORKSPACES':
 			return { ...store, workspaces: action.payload.workspaces };
