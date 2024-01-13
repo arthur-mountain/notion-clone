@@ -17,7 +17,7 @@ export const AppStoreProvider = ({ children }: PropsWithChildren) => {
 	const pathname = usePathname();
 	const { store, action } = useInit();
 	const [_, workspaceId, folderId, fileId] = useMemo(
-		() => pathname.split('/').filter(Boolean),
+		() => pathname?.split('/')?.filter(Boolean) || [],
 		[pathname],
 	);
 

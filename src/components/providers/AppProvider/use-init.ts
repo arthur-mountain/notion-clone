@@ -239,6 +239,42 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 const useInit = () => {
 	const [store, dispatch] = useReducer(reducer, initialStore);
 
+	const utils = {
+		getWorkspace: (
+			{ workspaceId }: { workspaceId: string } = {
+				workspaceId: store.workspaceId,
+			},
+		) => {
+			return store.workspaces.find((workspace) => workspace.id === workspaceId);
+		},
+		getFolder: (
+			{ workspaceId, folderId }: { workspaceId: string; folderId: string } = {
+				workspaceId: store.workspaceId,
+				folderId: store.folderId,
+			},
+		) => {
+			return store.workspaces
+				.find((workspace) => workspace.id === workspaceId)
+				?.folders.find((folder) => folder.id === folderId);
+		},
+		getFile: (
+			{
+				workspaceId,
+				folderId,
+				fileId,
+			}: { workspaceId: string; folderId: string; fileId: string } = {
+				workspaceId: store.workspaceId,
+				folderId: store.folderId,
+				fileId: store.fileId,
+			},
+		) => {
+			return store.workspaces
+				.find((workspace) => workspace.id === workspaceId)
+				?.folders.find((folder) => folder.id === folderId)
+				?.files.find((file) => file.id === fileId);
+		},
+	} as const;
+
 	const action = {
 		init: (payload: Extract<Action, { type: 'INIT' }>['payload']) => {
 			dispatch({ type: 'INIT', payload });
@@ -313,6 +349,7 @@ const useInit = () => {
 			dispatch({ type: 'DELETE_WORKSPACE' });
 			return deleteWorkspace(store.workspaceId);
 		},
+		utils,
 	};
 
 	return { store, action };
