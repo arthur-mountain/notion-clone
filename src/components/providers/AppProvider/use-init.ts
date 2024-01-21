@@ -37,20 +37,35 @@ type ActionPayload<Payload = {}> = Payload &
 	}>;
 type Action =
 	| { type: 'INIT'; payload?: ActionPayload }
-	| { type: 'SET_WORKSPACES'; payload: { workspaces: AppStoreWorkspaceType[] } }
-	| { type: 'ADD_WORKSPACE'; payload: { workspace: AppStoreWorkspaceType } }
+	| {
+			type: 'INIT_WORKSPACES';
+			payload: ActionPayload<{ workspaces: AppStoreWorkspaceType[] }>;
+	  }
+	| {
+			type: 'INSERT_WORKSPACE';
+			payload: ActionPayload<{ workspace: AppStoreWorkspaceType }>;
+	  }
 	| {
 			type: 'UPDATE_WORKSPACE';
-			payload: { workspace: Partial<AppStoreWorkspaceType> };
+			payload: ActionPayload<{ workspace: Partial<AppStoreWorkspaceType> }>;
 	  }
-	| { type: 'DELETE_WORKSPACE' }
-	| { type: 'SET_FOLDERS'; payload: { folders: AppStoreFolderType[] } }
-	| { type: 'ADD_FOLDER'; payload: { folder: AppStoreFolderType } }
-	| { type: 'UPDATE_FOLDER'; payload: { folder: Partial<AppStoreFolderType> } }
+	| { type: 'DELETE_WORKSPACE'; payload?: ActionPayload }
+	| {
+			type: 'SET_FOLDERS';
+			payload: ActionPayload<{ folders: AppStoreFolderType[] }>;
+	  }
+	| {
+			type: 'INSERT_FOLDER';
+			payload: ActionPayload<{ folder: AppStoreFolderType }>;
+	  }
+	| {
+			type: 'UPDATE_FOLDER';
+			payload: ActionPayload<{ folder: Partial<AppStoreFolderType> }>;
+	  }
 	| { type: 'DELETE_FOLDER'; payload?: ActionPayload }
-	| { type: 'SET_FILES'; payload: { files: FileType[] } }
-	| { type: 'ADD_FILE'; payload: { file: FileType } }
-	| { type: 'UPDATE_FILE'; payload: { file: Partial<FileType> } }
+	| { type: 'INIT_FILES'; payload: ActionPayload<{ files: FileType[] }> }
+	| { type: 'INSERT_FILE'; payload: ActionPayload<{ file: FileType }> }
+	| { type: 'UPDATE_FILE'; payload: ActionPayload<{ file: Partial<FileType> }> }
 	| { type: 'DELETE_FILE'; payload?: ActionPayload };
 
 const initialStore: Store = {
@@ -63,6 +78,10 @@ const initialStore: Store = {
 const sortByCreatedAt = (a: any, b: any) =>
 	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
 const reducer = (store: Store = initialStore, action: Action): Store => {
+	const workspaceId = action.payload?.workspaceId || store.workspaceId;
+	const folderId = action.payload?.folderId || store.folderId;
+	const fileId = action.payload?.fileId || store.fileId;
+
 	switch (action.type) {
 		case 'INIT':
 			return {
@@ -71,9 +90,9 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 				folderId: action.payload?.folderId || '',
 				fileId: action.payload?.fileId || '',
 			};
-		case 'SET_WORKSPACES':
+		case 'INIT_WORKSPACES':
 			return { ...store, workspaces: action.payload.workspaces };
-		case 'ADD_WORKSPACE':
+		case 'INSERT_WORKSPACE':
 			return {
 				...store,
 				workspaces: [...store.workspaces, action.payload.workspace],
@@ -82,14 +101,14 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.filter(
-					(workspace) => workspace.id !== store.workspaceId,
+					(workspace) => workspace.id !== workspaceId,
 				),
 			};
 		case 'UPDATE_WORKSPACE':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? { ...workspace, ...action.payload.workspace }
 						: workspace;
 				}),
@@ -98,7 +117,7 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: action.payload.folders.sort(sortByCreatedAt),
@@ -106,11 +125,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'ADD_FOLDER':
+		case 'INSERT_FOLDER':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: [...workspace.folders, action.payload.folder].sort(
@@ -124,11 +143,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.filter(
-									(folder) => folder.id !== store.folderId,
+									(folder) => folder.id !== folderId,
 								),
 						  }
 						: workspace;
@@ -138,11 +157,11 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === store.folderId
+									return folder.id === folderId
 										? { ...folder, ...action.payload.folder }
 										: folder;
 								}),
@@ -150,15 +169,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'SET_FILES':
+		case 'INIT_FILES':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === store.folderId
+									return folder.id === folderId
 										? {
 												...folder,
 												files: action.payload.files.sort(sortByCreatedAt),
@@ -169,15 +188,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 						: workspace;
 				}),
 			};
-		case 'ADD_FILE':
+		case 'INSERT_FILE':
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === store.folderId
+									return folder.id === folderId
 										? {
 												...folder,
 												files: [...folder.files, action.payload.file].sort(
@@ -194,15 +213,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folder: workspace.folders.map((folder) => {
-									return folder.id === store.folderId
+									return folder.id === folderId
 										? {
 												...folder,
 												files: folder.files.filter(
-													(file) => file.id !== store.fileId,
+													(file) => file.id !== fileId,
 												),
 										  }
 										: folder;
@@ -215,15 +234,15 @@ const reducer = (store: Store = initialStore, action: Action): Store => {
 			return {
 				...store,
 				workspaces: store.workspaces.map((workspace) => {
-					return workspace.id === store.workspaceId
+					return workspace.id === workspaceId
 						? {
 								...workspace,
 								folders: workspace.folders.map((folder) => {
-									return folder.id === store.folderId
+									return folder.id === folderId
 										? {
 												...folder,
 												files: folder.files.map((file) => {
-													return file.id === store.fileId
+													return file.id === fileId
 														? { ...file, ...action.payload.file }
 														: file;
 												}),
@@ -283,24 +302,28 @@ const useInit = () => {
 			dispatch({ type: 'INIT', payload });
 		},
 		// FILE
-		setFiles: (payload: Extract<Action, { type: 'SET_FILES' }>['payload']) => {
-			dispatch({ type: 'SET_FILES', payload });
+		setFiles: (payload: Extract<Action, { type: 'INIT_FILES' }>['payload']) => {
+			dispatch({ type: 'INIT_FILES', payload });
 		},
 		addFile: (payload: { file: FileType }) => {
-			dispatch({ type: 'ADD_FILE', payload });
+			dispatch({ type: 'INSERT_FILE', payload });
 			return createFile(payload.file);
 		},
 		updateFile: (
 			payload: Extract<Action, { type: 'UPDATE_FILE' }>['payload'],
 		) => {
-			if (!store.fileId) return { error: 'fileId not founded' };
+			const fileId = payload?.fileId || store.fileId;
+			if (!fileId) return { error: 'fileId not founded' };
 			dispatch({ type: 'UPDATE_FILE', payload });
-			return updateFile(payload.file, store.fileId);
+			return updateFile(payload.file, fileId);
 		},
-		deleteFile: () => {
-			if (!store.fileId) return { error: 'fileId not founded' };
+		deleteFile: (
+			payload?: Extract<Action, { type: 'DELETE_FILE' }>['payload'],
+		) => {
+			const fileId = payload?.fileId || store.fileId;
+			if (!fileId) return { error: 'fileId not founded' };
 			dispatch({ type: 'DELETE_FILE' });
-			return deleteFile(store.fileId);
+			return deleteFile(fileId);
 		},
 		// FOLDER
 		setFolders: (
@@ -310,7 +333,7 @@ const useInit = () => {
 		},
 		addFolder: (payload: { folder: FolderType }) => {
 			dispatch({
-				type: 'ADD_FOLDER',
+				type: 'INSERT_FOLDER',
 				payload: { folder: { ...payload.folder, files: [] } },
 			});
 			return createFolder(payload.folder);
@@ -318,24 +341,28 @@ const useInit = () => {
 		updateFolder: (
 			payload: Extract<Action, { type: 'UPDATE_FOLDER' }>['payload'],
 		) => {
-			if (!store.folderId) return { error: 'FolderId not founded' };
+			const folderId = payload?.folderId || store.folderId;
+			if (!folderId) return { error: 'FolderId not founded' };
 			dispatch({ type: 'UPDATE_FOLDER', payload });
-			return updateFolder(payload.folder, store.folderId);
+			return updateFolder(payload.folder, folderId);
 		},
-		deleteFolder: () => {
-			if (!store.folderId) return { error: 'FolderId not founded' };
+		deleteFolder: (
+			payload?: Extract<Action, { type: 'DELETE_FOLDER' }>['payload'],
+		) => {
+			const folderId = payload?.folderId || store.folderId;
+			if (!folderId) return { error: 'FolderId not founded' };
 			dispatch({ type: 'DELETE_FOLDER' });
-			return deleteFolder(store.folderId);
+			return deleteFolder(folderId);
 		},
 		// WORKSPACE
 		setWorkspaces: (
-			payload: Extract<Action, { type: 'SET_WORKSPACES' }>['payload'],
+			payload: Extract<Action, { type: 'INIT_WORKSPACES' }>['payload'],
 		) => {
-			dispatch({ type: 'SET_WORKSPACES', payload });
+			dispatch({ type: 'INIT_WORKSPACES', payload });
 		},
 		addWorkspace: (payload: { workspace: WorkspaceType }) => {
 			dispatch({
-				type: 'ADD_WORKSPACE',
+				type: 'INSERT_WORKSPACE',
 				payload: { workspace: { ...payload.workspace, folders: [] } },
 			});
 			return createWorkspace(payload.workspace);
@@ -343,14 +370,26 @@ const useInit = () => {
 		updateWorkspace: (
 			payload: Extract<Action, { type: 'UPDATE_WORKSPACE' }>['payload'],
 		) => {
-			if (!store.workspaceId) return { error: 'workspaceId not founded' };
+			const workspaceId = payload?.workspaceId || store.workspaceId;
+			if (!workspaceId) return { error: 'workspaceId not founded' };
 			dispatch({ type: 'UPDATE_WORKSPACE', payload });
-			return updateWorkspace(payload.workspace, store.workspaceId);
+			return updateWorkspace(payload.workspace, workspaceId);
 		},
-		deleteWorkspace: () => {
-			if (!store.workspaceId) return { error: 'workspaceId not founded' };
+		deleteWorkspace: (
+			payload?: Extract<Action, { type: 'DELETE_WORKSPACE' }>['payload'],
+		) => {
+			const workspaceId = payload?.workspaceId || store.workspaceId;
+			if (!workspaceId) return { error: 'workspaceId not founded' };
 			dispatch({ type: 'DELETE_WORKSPACE' });
-			return deleteWorkspace(store.workspaceId);
+			return deleteWorkspace(workspaceId);
+		},
+		onRealtimeUpdate: (
+			realtimeData: Exclude<
+				Action,
+				{ type: 'INIT' | 'INIT_WORKSPACES' | 'INIT_FOLDERS' | 'INIT_FILES' }
+			>,
+		) => {
+			dispatch(realtimeData);
 		},
 		utils,
 	};

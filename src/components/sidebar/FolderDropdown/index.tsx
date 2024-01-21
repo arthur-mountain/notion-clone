@@ -10,6 +10,7 @@ import Tooltip from '@/components/Global/Tooltip';
 import { useToast } from '@/components/ui/use-toast';
 import { Accordion } from '@/components/ui/accordion';
 import Dropdown from './Dropdown';
+import useRealtime from '@/lib/supabase/utils/client/use-realtime';
 
 type Props = {
 	workspaceFolders: FolderType[];
@@ -17,6 +18,7 @@ type Props = {
 };
 
 const FoldersDropdownList = ({ workspaceFolders, workspaceId }: Props) => {
+	useRealtime();
 	const {
 		store: { user },
 		action: { checkIsSubscriptionValid },
