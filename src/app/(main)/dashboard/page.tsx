@@ -13,7 +13,7 @@ const DashboardPage = async () => {
 
 	const { data: subscription, error: subscriptionError } =
 		await getFirstSubscriptionByUserId(user.id);
-
+	
 	if (subscriptionError) return;
 
 	const { data: workspace } = await getFirstWorkspaceByUserId(user.id);

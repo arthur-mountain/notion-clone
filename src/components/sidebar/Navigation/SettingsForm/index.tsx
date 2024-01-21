@@ -1,13 +1,10 @@
 'use client';
 import {
 	Briefcase,
-	CreditCard,
-	ExternalLink,
 	User as UserIcon,
-	ThumbsUp as ProfileIcon,
+	CakeIcon as ProfileIcon,
 	LogOut,
 } from 'lucide-react';
-import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -16,7 +13,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import Collaborators from '@/components/Global/Collaborators';
 import PermissionsSelect from '@/components/Global/PermissionsSelect';
 import LogoutButton from '@/components/Global/LogoutButton';
-// import { postData } from '@/lib/utils';
 import AlertDialog from './AlertDialog';
 import useInit from './use-init';
 
@@ -34,7 +30,6 @@ const SettingsForm = () => {
 			onChangeWorkspaceName,
 			onChangeWorkspaceLogo,
 			onDeleteWorkspace,
-			toggleSubscriptionDialog,
 			openAlertMessageModal,
 		},
 	} = useInit();
@@ -137,47 +132,6 @@ const SettingsForm = () => {
 				<LogoutButton className='flex items-center'>
 					<LogOut />
 				</LogoutButton>
-				<p className='flex items-center gap-2 mt-6'>
-					<CreditCard size={20} /> Billing & Plan
-				</p>
-				<hr />
-				<p className='text-muted-foreground'>
-					You are currently on a
-					{subscription?.status === 'active' ? 'Pro' : 'Free'} Plan
-				</p>
-				<Link
-					href='/'
-					target='_blank'
-					className='text-muted-foreground flex flex-row items-center gap-2'
-				>
-					View Plans <ExternalLink size={16} />
-				</Link>
-				{subscription?.status === 'active' ? (
-					<div>
-						<Button
-							type='button'
-							size='sm'
-							variant={'secondary'}
-							// disabled={loadingPortal}
-							className='text-sm'
-							// onClick={redirectToCustomerPortal}
-						>
-							Manage Subscription
-						</Button>
-					</div>
-				) : (
-					<div>
-						<Button
-							type='button'
-							size='sm'
-							variant={'secondary'}
-							className='text-sm'
-							onClick={() => toggleSubscriptionDialog(true)}
-						>
-							Start Plan
-						</Button>
-					</div>
-				)}
 			</>
 			<AlertDialog
 				isOpened={isOpenAlertMessage}

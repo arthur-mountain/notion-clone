@@ -10,14 +10,12 @@ import {
 import { upload } from '@/lib/supabase/utils/client/upload';
 import { useAppStore } from '@/components/Providers/AppProvider';
 import { useUser } from '@/components/Providers/UserProvider';
-// import { postData } from '@/lib/utils';
 
 const useInit = () => {
 	const router = useRouter();
 	const { toast } = useToast();
 	const {
 		store: { user, subscription, isSubscriptionModalOpen },
-		action: { toggleSubscriptionDialog },
 	} = useUser();
 	const {
 		store: { workspaces, workspaceId },
@@ -87,6 +85,8 @@ const useInit = () => {
 				setCollaborators(collaborators);
 			}
 		})();
+		// Ignore action object that references will change may cause infinite loop
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [workspaceId]);
 
 	return {
@@ -104,7 +104,6 @@ const useInit = () => {
 			onChangeWorkspaceName,
 			onChangeWorkspaceLogo,
 			onDeleteWorkspace,
-			toggleSubscriptionDialog,
 			openAlertMessageModal: setIsOpenAlertMessage,
 		},
 	};
