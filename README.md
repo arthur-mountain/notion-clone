@@ -1,3 +1,6 @@
+## Todo;
+Deploy later
+
 ## Description
 Create a website similar to Notion, following the resources below, such as
 
