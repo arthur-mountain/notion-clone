@@ -2,11 +2,16 @@ import type { AuthUser } from '@supabase/supabase-js';
 import type { FileType } from '@/lib/supabase/types';
 import { useAppStore } from '@/components/Providers/AppProvider';
 import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
 
 type UseInitType = { ids: string[]; type: 'folder' | 'file'; user: AuthUser };
 const useInit = ({ ids, type, user }: UseInitType) => {
+	const router = useRouter();
 	const { toast } = useToast();
-	const { action } = useAppStore();
+	const {
+		store: { workspaceId },
+		action,
+	} = useAppStore();
 
 	const onUpdateTitle = async (title: string) => {
 		let error;
@@ -77,6 +82,8 @@ const useInit = ({ ids, type, user }: UseInitType) => {
 				error = 'Type not founded';
 				break;
 		}
+
+		router.replace(`/dashboard/${workspaceId}`);
 
 		if (error) {
 			toast({

@@ -16,7 +16,7 @@ const useInit = () => {
 	const router = useRouter();
 	const { toast } = useToast();
 	const {
-		store: { subscription, isSubscriptionModalOpen },
+		store: { user, subscription, isSubscriptionModalOpen },
 		action: { toggleSubscriptionDialog },
 	} = useUser();
 	const {
@@ -91,6 +91,7 @@ const useInit = () => {
 
 	return {
 		store: {
+			user,
 			isSubscriptionModalOpen,
 			isOpenAlertMessage,
 			currentWorkspace: workspaces.find(({ id }) => id === workspaceId),

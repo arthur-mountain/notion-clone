@@ -10,11 +10,6 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/components/ui/use-toast';
-/** FIXME: implement below those three func */
-import { postData } from '@/services/postData';
-import { formatPrice } from '@/lib/utils/formatter/format-price';
-import { getStripe } from '@/lib/utils/stripe';
-/** FIXME: implement upper those three func */
 import { useUser } from '@/components/Providers/UserProvider';
 import Loader from './Loader';
 
@@ -43,21 +38,12 @@ const SubscriptionModal = ({ products }: Props) => {
 				setIsLoading(false);
 				return;
 			}
-			const { sessionId } = await postData({
-				url: '/api/create-checkout-session',
-				data: { price },
-			});
-
-			(await getStripe())?.redirectToCheckout({ sessionId });
 		} catch (error) {
 			toast({ title: 'Oppse! Something went wrong.', variant: 'destructive' });
 		} finally {
 			setIsLoading(false);
 		}
 	};
-
-	// WIP
-	return null;
 
 	if (subscription?.status === 'active') {
 		return (
@@ -95,7 +81,7 @@ const SubscriptionModal = ({ products }: Props) => {
 						{product.prices?.map((price: any) => (
 							<React.Fragment key={price.id}>
 								<b className='text-3xl text-foreground'>
-									{formatPrice(price)} / <small>{price.interval}</small>
+									{price} / <small>{price.interval}</small>
 								</b>
 								<Button
 									onClick={() => onClickContinue(price)}

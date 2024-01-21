@@ -1,12 +1,21 @@
 'use client';
-import { Briefcase, CreditCard, ExternalLink } from 'lucide-react';
+import {
+	Briefcase,
+	CreditCard,
+	ExternalLink,
+	User as UserIcon,
+	ThumbsUp as ProfileIcon,
+	LogOut,
+} from 'lucide-react';
 import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import Collaborators from '@/components/Global/Collaborators';
 import PermissionsSelect from '@/components/Global/PermissionsSelect';
+import LogoutButton from '@/components/Global/LogoutButton';
 // import { postData } from '@/lib/utils';
 import AlertDialog from './AlertDialog';
 import useInit from './use-init';
@@ -14,6 +23,7 @@ import useInit from './use-init';
 const SettingsForm = () => {
 	const {
 		store: {
+			user,
 			subscription,
 			isOpenAlertMessage,
 			currentWorkspace,
@@ -93,13 +103,13 @@ const SettingsForm = () => {
 						Delete Workspace
 					</Button>
 				</Alert>
-				{/* <p className='flex items-center gap-2 mt-6'>
+				<p className='flex items-center gap-2 mt-6'>
 					<UserIcon size={20} /> Profile
 				</p>
 				<hr />
 				<div className='flex items-center'>
 					<Avatar>
-						<AvatarImage src='' />
+						<AvatarImage src={user?.extra?.avatarUrl || ''} />
 						<AvatarFallback>
 							<ProfileIcon />
 						</AvatarFallback>
@@ -126,7 +136,7 @@ const SettingsForm = () => {
 				</div>
 				<LogoutButton className='flex items-center'>
 					<LogOut />
-				</LogoutButton> */}
+				</LogoutButton>
 				<p className='flex items-center gap-2 mt-6'>
 					<CreditCard size={20} /> Billing & Plan
 				</p>
